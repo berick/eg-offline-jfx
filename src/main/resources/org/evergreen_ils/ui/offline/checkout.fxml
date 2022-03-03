@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="385.0" prefWidth="541.0" spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.evergreen_ils.ui.offline.CheckoutController">
+<VBox prefHeight="385.0" prefWidth="541.0" spacing="20.0" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.evergreen_ils.ui.offline.CheckoutController">
    <children>
       <GridPane hgap="8.0" prefHeight="167.0" prefWidth="517.0" vgap="8.0">
         <columnConstraints>
