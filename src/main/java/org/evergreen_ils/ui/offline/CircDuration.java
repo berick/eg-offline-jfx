@@ -1,4 +1,5 @@
 package org.evergreen_ils.ui.offline;
+
 import javafx.beans.NamedArg;
 
 public class CircDuration {

@@ -9,23 +9,23 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="385.0" prefWidth="526.0" spacing="20.0" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.evergreen_ils.ui.offline.PrimaryController">
+<VBox prefHeight="465.0" prefWidth="631.0" spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.evergreen_ils.ui.offline.PrimaryController">
    <children>
       <MenuBar>
         <menus>
           <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Test 1" />
-                  <MenuItem mnemonicParsing="false" text="Test 1" />
-            </items>
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Refresh Data" />
+                  <MenuItem mnemonicParsing="false" text="Exit" />
+               </items>
           </Menu>
         </menus>
       </MenuBar>
-      <TabPane prefHeight="200.0" prefWidth="0.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane prefHeight="383.0" prefWidth="591.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Checkout">
             <content>
-              <fx:include source="checkout.fxml"/>
+              <fx:include source="checkout.fxml" />
             </content>
           </Tab>
           <Tab text="Renew" />
