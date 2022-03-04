@@ -6,11 +6,16 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.event.Event;
 import javafx.event.EventTarget;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
 import java.time.LocalDate;
 
 public class CheckoutController {
@@ -24,6 +29,12 @@ public class CheckoutController {
     @FXML RadioButton itemBarcodeRadio;
     @FXML RadioButton nonCatRadio;
     @FXML TextField nonCatCountInput;
+    @FXML TableColumn patBarcodeCol;
+    @FXML TableColumn itemBarcodeCol;
+    @FXML TableColumn dueDateCol;
+
+    @FXML TableView<CheckoutEntry> checkoutsTable;
+    ObservableList<CheckoutEntry> checkoutsList;
 
     @FXML public void initialize() {
         System.out.println("INITIALIZE()");
@@ -40,6 +51,13 @@ public class CheckoutController {
         // TODO these will come from the server.
         nonCatSelect.getItems().add(new NonCatType(1, "Paperback"));
         nonCatSelect.getItems().add(new NonCatType(2, "Newspaper"));
+
+        patBarcodeCol.setCellValueFactory(new PropertyValueFactory<>("patronBarcode"));
+        itemBarcodeCol.setCellValueFactory(new PropertyValueFactory<>("itemBarcode"));
+        dueDateCol.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
+
+        checkoutsList = FXCollections.observableArrayList();
+        checkoutsTable.setItems(checkoutsList);
     }
 
     @FXML void setCanCheckout(ActionEvent event) {
@@ -112,6 +130,22 @@ public class CheckoutController {
     public void checkout() {
         System.out.println("Due Date: " + dueDateSelect.getValue());
         System.out.println("Patron Barcode: " + patronBarcodeInput.getText());
+        System.out.println("Item Barcode: " + itemBarcodeInput.getText());
+
+        String dueDate;
+        if (dueDateSelect.getValue() == null) {
+            dueDate = "TBD";
+        } else {
+            dueDate = dueDateSelect.getValue().toString();
+        }
+
+        checkoutsList.addAll(
+            new CheckoutEntry(
+                patronBarcodeInput.getText(),
+                itemBarcodeInput.getText(),
+                dueDate
+            )
+        );
 
         itemBarcodeInput.setText("");
         itemBarcodeInput.requestFocus();
