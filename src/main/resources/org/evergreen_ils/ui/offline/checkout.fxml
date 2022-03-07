@@ -54,7 +54,7 @@
             <TextField fx:id="itemBarcodeInput" onAction="#setCanCheckout" onKeyPressed="#handleKeyPress" promptText="Item Barcode" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Non-Cataloged Type" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
             <ChoiceBox fx:id="nonCatSelect" disable="true" onAction="#setCanCheckout" prefHeight="24.0" prefWidth="194.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Button fx:id="checkoutButton" disable="true" mnemonicParsing="false" onAction="#checkout" text="Checkout" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+            <Button fx:id="checkoutButton" disable="true" mnemonicParsing="false" onAction="#checkout" text="Checkout" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
             <CheckBox mnemonicParsing="false" text="Print Receipt" GridPane.columnIndex="1" GridPane.rowIndex="4">
                <padding>
                   <Insets right="20.0" />
@@ -83,6 +83,7 @@
                   <TableColumn fx:id="dueDateCol" prefWidth="173.0" text="Due Date" />
               </columns>
             </TableView>
+            <Button fx:id="saveXactsButton" mnemonicParsing="false" onAction="#saveCheckouts" text="Save Transactions" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

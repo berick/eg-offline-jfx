@@ -3,7 +3,7 @@
  * SQLITE offline transaction schema
  */
 
-CREATE TABLE xact (
+CREATE TABLE IF NOT EXISTS xact (
     id INTEGER PRIMARY KEY,
     realtime TEXT DEFAULT (DATATIME()) NOT NULL,
     action TEXT,

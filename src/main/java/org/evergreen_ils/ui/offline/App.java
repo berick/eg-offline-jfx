@@ -32,8 +32,13 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        launch();
+        try {
+            Data.connect();
+            Data.createDatabase();
+            launch();
+        } catch (Exception e) {
+            System.err.println("Application exited " + e);
+            e.printStackTrace();
+        }
     }
-
-
 }

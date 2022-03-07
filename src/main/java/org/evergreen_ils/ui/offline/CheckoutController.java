@@ -1,5 +1,6 @@
 package org.evergreen_ils.ui.offline;
 
+import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
@@ -36,8 +37,7 @@ public class CheckoutController {
     @FXML TableView<CheckoutEntry> checkoutsTable;
     ObservableList<CheckoutEntry> checkoutsList;
 
-    @FXML public void initialize() {
-        System.out.println("INITIALIZE()");
+    @FXML public void initialize() throws IOException {
 
         // This is meant to be handled in the markup via onAction, but
         // it's not firing.  *shrug*
@@ -128,9 +128,6 @@ public class CheckoutController {
     }
 
     public void checkout() {
-        System.out.println("Due Date: " + dueDateSelect.getValue());
-        System.out.println("Patron Barcode: " + patronBarcodeInput.getText());
-        System.out.println("Item Barcode: " + itemBarcodeInput.getText());
 
         String dueDate;
         if (dueDateSelect.getValue() == null) {
@@ -139,16 +136,20 @@ public class CheckoutController {
             dueDate = dueDateSelect.getValue().toString();
         }
 
-        checkoutsList.addAll(
-            new CheckoutEntry(
-                patronBarcodeInput.getText(),
-                itemBarcodeInput.getText(),
-                dueDate
-            )
+        CheckoutEntry entry = new CheckoutEntry(
+            patronBarcodeInput.getText(),
+            itemBarcodeInput.getText(),
+            dueDate
         );
+
+        checkoutsList.addAll(entry);
 
         itemBarcodeInput.setText("");
         itemBarcodeInput.requestFocus();
+    }
+
+    @FXML void saveCheckouts() throws java.sql.SQLException {
+        Data.saveCheckouts(checkoutsList);
     }
 }
 
