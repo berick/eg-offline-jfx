@@ -38,12 +38,12 @@
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Item Barcode" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
             <DatePicker fx:id="dueDateSelect" onAction="#setCanCheckout" onKeyPressed="#handleKeyPress" promptText="Due Date" GridPane.columnIndex="1" />
             <ChoiceBox fx:id="durationSelect" onAction="#setCanCheckout" prefHeight="25.0" prefWidth="138.0" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.hgrow="SOMETIMES">
-               <org.evergreen_ils.ui.offline.CircDuration label="Today + 7 Days" value="7 days" />
-               <org.evergreen_ils.ui.offline.CircDuration label="Today + 14 Days" value="14 days" />
-               <org.evergreen_ils.ui.offline.CircDuration label="Today + 21 Days" value="21 days" />
-               <org.evergreen_ils.ui.offline.CircDuration label="Today + 28 Days" value="28 days" />
-               <org.evergreen_ils.ui.offline.CircDuration label="Today + 42 Days" value="42 days" />
-               <org.evergreen_ils.ui.offline.CircDuration label="Today + 1 Year" value="1 year" />
+               <org.evergreen_ils.ui.offline.CircDuration label="Today + 7 Days" value="P7D" />
+               <org.evergreen_ils.ui.offline.CircDuration label="Today + 14 Days" value="P14D" />
+               <org.evergreen_ils.ui.offline.CircDuration label="Today + 21 Days" value="P21D" />
+               <org.evergreen_ils.ui.offline.CircDuration label="Today + 28 Days" value="P28D" />
+               <org.evergreen_ils.ui.offline.CircDuration label="Today + 42 Days" value="P42D" />
+               <org.evergreen_ils.ui.offline.CircDuration label="Today + 1 Year" value="P1Y" />
             </ChoiceBox>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Or:" GridPane.columnIndex="2">
                <GridPane.margin>

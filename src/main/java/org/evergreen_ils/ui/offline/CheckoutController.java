@@ -18,6 +18,8 @@ import javafx.event.EventHandler;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
 
 public class CheckoutController {
 
@@ -131,7 +133,7 @@ public class CheckoutController {
 
         String dueDate;
         if (dueDateSelect.getValue() == null) {
-            dueDate = "TBD";
+            dueDate = calcDueDate(durationSelect.getValue().toValue());
         } else {
             dueDate = dueDateSelect.getValue().toString();
         }
@@ -156,6 +158,56 @@ public class CheckoutController {
         } catch (java.sql.SQLException e) {
             throw e;
         }
+    }
+
+    String calcDueDate(String interval)  {
+
+        LocalDateTime dueDate = LocalDateTime.now();
+
+        /*
+        String[] parts = interval.split(" ");
+        int count = Integer.parseInt(parts[0]);
+        */
+
+        System.out.println("INTERVAL " + interval);
+        Period period = Period.parse(interval);
+
+        dueDate = dueDate.plus(period);
+        System.out.println("Period: " + period);
+        System.out.println("Due Date: " + dueDate);
+
+        return String.format("%1$tY-%1$tm-%1$td", dueDate);
+
+        /*
+        switch (parts[1]) {
+
+            case "hour":
+            case "hours":
+                now = now.plusDays(count);
+                break;
+
+            case "day":
+            case "days":
+                now = now.plusDays(count);
+                break;
+
+            case "month":
+            case "months":
+                now = now.plusMonths(count);
+                break;
+
+            case "year":
+            case "years":
+                now = now.plusYears(count);
+                break;
+
+            default:
+                System.err.println("Invalid Duration: " + interval);
+                return null;
+        }
+
+        return String.format("%1$tY-%1$tm-%1$td", now);
+        */
     }
 }
 
