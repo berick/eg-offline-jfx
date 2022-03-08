@@ -36,8 +36,8 @@ public class CheckoutController {
     @FXML TableColumn itemBarcodeCol;
     @FXML TableColumn dueDateCol;
 
-    @FXML TableView<CheckoutEntry> checkoutsTable;
-    ObservableList<CheckoutEntry> checkoutsList;
+    @FXML TableView<Transaction> checkoutsTable;
+    ObservableList<Transaction> checkoutsList;
 
     @FXML public void initialize() throws IOException {
 
@@ -138,13 +138,12 @@ public class CheckoutController {
             dueDate = dueDateSelect.getValue().toString();
         }
 
-        CheckoutEntry entry = new CheckoutEntry(
-            patronBarcodeInput.getText(),
-            itemBarcodeInput.getText(),
-            dueDate
-        );
+        Transaction xact = new Transaction();
+        xact.setPatronBarcode(patronBarcodeInput.getText());
+        xact.setItemBarcode(itemBarcodeInput.getText());
+        xact.setDueDate(dueDate);
 
-        checkoutsList.addAll(entry);
+        checkoutsList.addAll(xact);
 
         itemBarcodeInput.setText("");
         itemBarcodeInput.requestFocus();
@@ -152,8 +151,7 @@ public class CheckoutController {
 
     @FXML void saveCheckouts() throws java.sql.SQLException {
         try {
-            Data.saveCheckouts(checkoutsList);
-            // Only clear the current list if we successfully save.
+            Data.saveTransactions(checkoutsList);
             checkoutsList.clear();
         } catch (java.sql.SQLException e) {
             throw e;
@@ -164,50 +162,11 @@ public class CheckoutController {
 
         LocalDateTime dueDate = LocalDateTime.now();
 
-        /*
-        String[] parts = interval.split(" ");
-        int count = Integer.parseInt(parts[0]);
-        */
-
-        System.out.println("INTERVAL " + interval);
         Period period = Period.parse(interval);
 
         dueDate = dueDate.plus(period);
-        System.out.println("Period: " + period);
-        System.out.println("Due Date: " + dueDate);
 
         return String.format("%1$tY-%1$tm-%1$td", dueDate);
-
-        /*
-        switch (parts[1]) {
-
-            case "hour":
-            case "hours":
-                now = now.plusDays(count);
-                break;
-
-            case "day":
-            case "days":
-                now = now.plusDays(count);
-                break;
-
-            case "month":
-            case "months":
-                now = now.plusMonths(count);
-                break;
-
-            case "year":
-            case "years":
-                now = now.plusYears(count);
-                break;
-
-            default:
-                System.err.println("Invalid Duration: " + interval);
-                return null;
-        }
-
-        return String.format("%1$tY-%1$tm-%1$td", now);
-        */
     }
 }
 

@@ -36,7 +36,7 @@
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Due Date" GridPane.halignment="RIGHT" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Patron Barcode" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Item Barcode" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-            <DatePicker fx:id="dueDateSelect" onAction="#setCanCheckout" onKeyPressed="#handleKeyPress" promptText="Due Date" GridPane.columnIndex="1" />
+            <DatePicker fx:id="dueDateSelect" onAction="#setCanCheckout" onKeyPressed="#handleKeyPress" prefHeight="24.0" prefWidth="215.0" promptText="Due Date" GridPane.columnIndex="1" />
             <ChoiceBox fx:id="durationSelect" onAction="#setCanCheckout" prefHeight="25.0" prefWidth="138.0" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.hgrow="SOMETIMES">
                <org.evergreen_ils.ui.offline.CircDuration label="Today + 7 Days" value="P7D" />
                <org.evergreen_ils.ui.offline.CircDuration label="Today + 14 Days" value="P14D" />
@@ -83,7 +83,7 @@
                   <TableColumn fx:id="dueDateCol" prefWidth="173.0" text="Due Date" />
               </columns>
             </TableView>
-            <Button fx:id="saveXactsButton" mnemonicParsing="false" onAction="#saveCheckouts" text="Save Transactions" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+            <Button fx:id="saveXactsButton" mnemonicParsing="false" onAction="#saveCheckouts" text="Save Checkouts" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

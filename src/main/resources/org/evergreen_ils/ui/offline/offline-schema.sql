@@ -10,8 +10,9 @@ CREATE TABLE IF NOT EXISTS xact (
     due_date TEXT,
     backdate TEXT,
     item_barcode TEXT,
-    patron_barcode TEXT,
-    workstation TEXT
+    noncat_type TEXT,
+    noncat_count TEXT,
+    patron_barcode TEXT
 );
 
 
