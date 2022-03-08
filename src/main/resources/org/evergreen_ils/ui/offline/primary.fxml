@@ -44,7 +44,7 @@
               <content>
                 <fx:include source="transactions.fxml" />
               </content>
-            </tab>
+            </Tab>
         </tabs>
       </TabPane>
    </children>
