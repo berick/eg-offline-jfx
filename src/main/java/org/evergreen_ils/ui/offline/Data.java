@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -25,14 +27,12 @@ public class Data {
 
     private static Connection conn;
 
-    static void connect() throws SQLException {
+    // All pending, unexported transactions
+    static ObservableList<Transaction> xactsList;
 
-        //try {
-            conn = DriverManager.getConnection(OFFLINE_DB_URL);
-        //} catch (SQLException e) {
-            //e.printStackTrace();
-            //throw e;
-        //}
+    static void connect() throws SQLException {
+        conn = DriverManager.getConnection(OFFLINE_DB_URL);
+        xactsList = FXCollections.observableArrayList();
     }
 
     static void createDatabase()
