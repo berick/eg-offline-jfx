@@ -6,6 +6,7 @@ import org.json.*;
 
 public class Transaction {
 
+    private StringProperty id;
     private StringProperty patronBarcode;
     private StringProperty itemBarcode;
     private StringProperty dueDate;
@@ -28,6 +29,21 @@ public class Transaction {
             realTime = new SimpleStringProperty(this, "realTime");
         }
         return realTime;
+    }
+
+    public void setId(String value) {
+        idProperty().set(value);
+    }
+
+    public String getId() {
+        return idProperty().get();
+    }
+
+    public StringProperty idProperty() {
+        if (id == null) {
+            id = new SimpleStringProperty(this, "id");
+        }
+        return id;
     }
 
 

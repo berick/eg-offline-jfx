@@ -48,8 +48,6 @@ public class Data {
             sql += line + "\n";
         }
 
-        System.out.println(sql);
-
         Statement stmt = conn.createStatement();
         stmt.execute(sql);
     }
@@ -74,14 +72,16 @@ public class Data {
         }
     }
 
-    static void saveTransaction(Transaction xact) throws SQLException {
+    // Populates the Transaction with the database-generated 'id' and 'realtime'.
+    static Transaction saveTransaction(Transaction xact) throws SQLException {
 
         String sql =
             "INSERT INTO xact (action, due_date, backdate, "
             + "item_barcode, patron_barcode, noncat_type, noncat_count)"
             + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        PreparedStatement stmt = conn.prepareStatement(sql);
+        PreparedStatement stmt =
+            conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
         stmt.setString(1, xact.getAction());
         stmt.setString(2, xact.getDueDate());
@@ -91,10 +91,19 @@ public class Data {
         stmt.setString(6, xact.getNonCatType());
         stmt.setString(7, xact.getNonCatCount());
 
-        stmt.executeUpdate();
+        int count = stmt.executeUpdate();
+
+        if (count == 0) { return null; }
+
+        ResultSet generatedKeys = stmt.getGeneratedKeys();
+
+        if (generatedKeys.next()) {
+            String id = generatedKeys.getString(1);
+            return Data.getXactFromDatabase(id);
+        }
+
+        return null;
     }
-
-
 
     /*
     CREATE TABLE IF NOT EXISTS xact (
@@ -118,22 +127,44 @@ public class Data {
         ResultSet set = stmt.executeQuery();
 
         while (set.next()) {
-
-            Transaction xact = new Transaction();
-            xact.setRealTime(set.getString(1));
-            xact.setAction(set.getString(2));
-            xact.setDueDate(set.getString(3));
-            xact.setBackDate(set.getString(4));
-            xact.setItemBarcode(set.getString(5));
-            xact.setPatronBarcode(set.getString(6));
-            xact.setNonCatType(set.getString(7));
-            xact.setNonCatCount(set.getString(8));
-
+            Transaction xact = Data.getXactFromDbRow(set);
             writer.write(xact.toJson());
             writer.newLine();
         }
 
         writer.close();
+    }
+
+    static Transaction getXactFromDbRow(ResultSet set) throws SQLException {
+        Transaction xact = new Transaction();
+
+        xact.setId(set.getString("id"));
+        xact.setRealTime(set.getString("realtime"));
+        xact.setAction(set.getString("action"));
+        xact.setDueDate(set.getString("due_date"));
+        xact.setBackDate(set.getString("backdate"));
+        xact.setItemBarcode(set.getString("item_barcode"));
+        xact.setPatronBarcode(set.getString("patron_barcode"));
+        xact.setNonCatType(set.getString("noncat_type"));
+        xact.setNonCatCount(set.getString("noncat_count"));
+
+        return xact;
+    }
+
+    static Transaction getXactFromDatabase(String id) throws SQLException {
+
+        String sql = "SELECT * FROM xact WHERE id = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1, id);
+
+        ResultSet set = stmt.executeQuery();
+
+        if (!set.next()) { return null; }
+
+        System.out.println("RESULT SET: " + set);
+        System.out.println("RESULT SET: " + set.getString("realtime"));
+
+        return Data.getXactFromDbRow(set);
     }
 }
 

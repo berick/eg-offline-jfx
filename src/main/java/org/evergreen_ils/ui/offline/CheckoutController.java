@@ -142,20 +142,30 @@ public class CheckoutController {
         xact.setPatronBarcode(patronBarcodeInput.getText());
         xact.setItemBarcode(itemBarcodeInput.getText());
         xact.setDueDate(dueDate);
+        xact.setAction("checkout");
 
-        checkoutsList.addAll(xact);
+        try {
+            xact = Data.saveTransaction(xact);
+
+            checkoutsList.addAll(xact);
+            Data.xactsList.addAll(xact);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         itemBarcodeInput.setText("");
         itemBarcodeInput.requestFocus();
     }
 
     @FXML void saveCheckouts() throws java.sql.SQLException {
+        /*
         try {
             Data.saveTransactions(checkoutsList);
             checkoutsList.clear();
         } catch (java.sql.SQLException e) {
             throw e;
         }
+        */
     }
 
     String calcDueDate(String interval)  {
