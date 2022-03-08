@@ -149,7 +149,13 @@ public class CheckoutController {
     }
 
     @FXML void saveCheckouts() throws java.sql.SQLException {
-        Data.saveCheckouts(checkoutsList);
+        try {
+            Data.saveCheckouts(checkoutsList);
+            // Only clear the current list if we successfully save.
+            checkoutsList.clear();
+        } catch (java.sql.SQLException e) {
+            throw e;
+        }
     }
 }
 

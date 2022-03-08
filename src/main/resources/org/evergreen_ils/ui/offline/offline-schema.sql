@@ -5,7 +5,7 @@
 
 CREATE TABLE IF NOT EXISTS xact (
     id INTEGER PRIMARY KEY,
-    realtime TEXT DEFAULT (DATATIME()) NOT NULL,
+    realtime TEXT DEFAULT (DATETIME()) NOT NULL,
     action TEXT,
     due_date TEXT,
     backdate TEXT,

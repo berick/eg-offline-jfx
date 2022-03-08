@@ -79,7 +79,7 @@ public class Data {
             stmt.setString(2, entry.getItemBarcode());
             stmt.setString(3, entry.getPatronBarcode());
 
-            stmt.execute(sql);
+            stmt.executeUpdate();
         }
     }
 }
