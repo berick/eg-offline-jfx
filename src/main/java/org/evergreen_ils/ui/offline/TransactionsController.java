@@ -1,6 +1,7 @@
 package org.evergreen_ils.ui.offline;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
@@ -10,7 +11,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class TransactionsController {
-
 
     @FXML TableView<Transaction> xactsTable;
 
@@ -35,10 +35,10 @@ public class TransactionsController {
         xactsTable.setItems(Data.xactsList);
     }
 
-    @FXML void exportTransactions() {
+    @FXML void exportTransactions() throws IOException, SQLException {
+        Data.saveAllTransactionsToFile();
     }
 
     @FXML void deleteTransactions() {
     }
-
 }

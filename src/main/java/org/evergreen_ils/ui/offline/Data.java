@@ -161,9 +161,6 @@ public class Data {
 
         if (!set.next()) { return null; }
 
-        System.out.println("RESULT SET: " + set);
-        System.out.println("RESULT SET: " + set.getString("realtime"));
-
         return Data.getXactFromDbRow(set);
     }
 }

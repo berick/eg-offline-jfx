@@ -3,6 +3,8 @@
 
 *.db
 
+offline-export.txt
+
 # vim
 *.swp
 
