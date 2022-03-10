@@ -83,7 +83,6 @@
                   <TableColumn fx:id="dueDateCol" prefWidth="173.0" text="Due Date" />
               </columns>
             </TableView>
-            <Button fx:id="saveXactsButton" mnemonicParsing="false" onAction="#saveCheckouts" text="Save Checkouts" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.scene.control.Alert;
+import javafx.application.Platform;
 
 import java.io.IOException;
 
@@ -32,13 +34,24 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
+
         try {
+
             Data.connect();
             Data.createDatabase();
             launch();
+
         } catch (Exception e) {
-            System.err.println("Application exited " + e);
+
+            System.err.println("Caught another error: " + e);
             e.printStackTrace();
+
+            Alert alert = new Alert(Alert.AlertType.ERROR,
+                "An unrecoverable error occurred.  Please restart the application.  See error logs for details");
+
+            alert.showAndWait();
+            Platform.exit();
         }
     }
 }
+

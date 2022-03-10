@@ -20,6 +20,7 @@ import javafx.collections.FXCollections;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 
 public class CheckoutController {
 
@@ -39,7 +40,7 @@ public class CheckoutController {
     @FXML TableView<Transaction> checkoutsTable;
     ObservableList<Transaction> checkoutsList;
 
-    @FXML public void initialize() throws IOException {
+    @FXML public void initialize() {
 
         // This is meant to be handled in the markup via onAction, but
         // it's not firing.  *shrug*
@@ -157,17 +158,6 @@ public class CheckoutController {
         itemBarcodeInput.requestFocus();
     }
 
-    @FXML void saveCheckouts() throws java.sql.SQLException {
-        /*
-        try {
-            Data.saveTransactions(checkoutsList);
-            checkoutsList.clear();
-        } catch (java.sql.SQLException e) {
-            throw e;
-        }
-        */
-    }
-
     String calcDueDate(String interval)  {
 
         LocalDateTime dueDate = LocalDateTime.now();
@@ -176,7 +166,7 @@ public class CheckoutController {
 
         dueDate = dueDate.plus(period);
 
-        return String.format("%1$tY-%1$tm-%1$td", dueDate);
+        return dueDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 }
 
