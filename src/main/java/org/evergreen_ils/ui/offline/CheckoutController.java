@@ -133,6 +133,7 @@ public class CheckoutController {
     public void checkout() {
 
         String dueDate;
+
         if (dueDateSelect.getValue() == null) {
             dueDate = calcDueDate(durationSelect.getValue().toValue());
         } else {
@@ -149,7 +150,9 @@ public class CheckoutController {
             xact = Data.saveTransaction(xact);
 
             checkoutsList.addAll(xact);
+
             Data.xactsList.addAll(xact);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
