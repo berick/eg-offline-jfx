@@ -1,4 +1,5 @@
 package org.evergreen_ils.ui.offline;
+import java.util.logging.Logger;
 
 import java.io.IOException;
 import javafx.fxml.FXML;
@@ -9,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.event.Event;
@@ -33,19 +35,22 @@ public class CheckoutController {
     @FXML RadioButton itemBarcodeRadio;
     @FXML RadioButton nonCatRadio;
     @FXML TextField nonCatCountInput;
-    @FXML TableColumn patBarcodeCol;
-    @FXML TableColumn itemBarcodeCol;
-    @FXML TableColumn dueDateCol;
+    @FXML TableColumn<Transaction, String> patBarcodeCol;
+    @FXML TableColumn<Transaction, String> itemBarcodeCol;
+    @FXML TableColumn<Transaction, String> dueDateCol;
+    //@FXML RowConstraints nonCatRow;
 
     @FXML TableView<Transaction> checkoutsTable;
     ObservableList<Transaction> checkoutsList;
+
+    static final Logger logger = Logger.getLogger("org.evergreen_ils.ui.offline");
 
     @FXML public void initialize() {
 
         // This is meant to be handled in the markup via onAction, but
         // it's not firing.  *shrug*
-        EventHandler handler = new EventHandler() {
-            public void handle(Event evt) { setCanCheckout(null); }
+        EventHandler<ActionEvent> handler = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent evt) { setCanCheckout(evt); }
         };
 
         durationSelect.setOnAction(handler);

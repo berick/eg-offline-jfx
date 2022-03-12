@@ -14,13 +14,13 @@ public class TransactionsController {
 
     @FXML TableView<Transaction> xactsTable;
 
-    @FXML TableColumn patronBarcodeCol;
-    @FXML TableColumn itemBarcodeCol;
-    @FXML TableColumn dueDateCol;
-    @FXML TableColumn backDateCol;
-    @FXML TableColumn actionCol;
-    @FXML TableColumn nonCatCountCol;
-    @FXML TableColumn realTimeCol;
+    @FXML TableColumn<Transaction, String> patronBarcodeCol;
+    @FXML TableColumn<Transaction, String> itemBarcodeCol;
+    @FXML TableColumn<Transaction, String> dueDateCol;
+    @FXML TableColumn<Transaction, String> backDateCol;
+    @FXML TableColumn<Transaction, String> actionCol;
+    @FXML TableColumn<Transaction, String> nonCatCountCol;
+    @FXML TableColumn<Transaction, String> realTimeCol;
 
     @FXML public void initialize() throws IOException {
 

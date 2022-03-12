@@ -9,6 +9,7 @@ import javafx.scene.control.Alert;
 import javafx.application.Platform;
 
 import java.io.IOException;
+import java.util.logging.*;
 
 /**
  * JavaFX App
@@ -16,6 +17,8 @@ import java.io.IOException;
 public class App extends Application {
 
     private static Scene scene;
+
+    static final Logger logger = Logger.getLogger("org.evergreen_ils.ui.offline");
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -34,6 +37,7 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
+        logger.info("Starting Offline UI");
 
         try {
 
@@ -47,7 +51,7 @@ public class App extends Application {
             e.printStackTrace();
 
             Alert alert = new Alert(Alert.AlertType.ERROR,
-                "An unrecoverable error occurred.  Please restart the application.  See error logs for details");
+                "An unrecoverable error occurred.  See error logs for details");
 
             alert.showAndWait();
             Platform.exit();
