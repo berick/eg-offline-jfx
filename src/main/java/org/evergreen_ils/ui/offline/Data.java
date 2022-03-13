@@ -125,7 +125,7 @@ public class Data {
         BufferedWriter writer = new BufferedWriter(new FileWriter(OFFLINE_EXPORT));
 
         PreparedStatement stmt = conn.prepareStatement(
-            "SELECT * FROM xact WHERE export_time IS NULL OR export_time = ''");
+            "SELECT * FROM xact WHERE export_time IS NULL");
 
         ResultSet set = stmt.executeQuery();
 

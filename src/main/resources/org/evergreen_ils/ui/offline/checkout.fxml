@@ -16,13 +16,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="686.0" prefWidth="652.0" spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.evergreen_ils.ui.offline.CheckoutController">
+<VBox prefHeight="686.0" prefWidth="717.0" spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.evergreen_ils.ui.offline.CheckoutController">
    <children>
       <GridPane hgap="10.0" prefHeight="785.0" prefWidth="666.0" vgap="10.0">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="70.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="214.0" minWidth="10.0" prefWidth="206.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="290.0" minWidth="10.0" prefWidth="249.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="229.0" minWidth="10.0" prefWidth="214.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints maxHeight="67.0" minHeight="10.0" prefHeight="70.0" vgrow="SOMETIMES" />
@@ -36,7 +36,7 @@
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Due Date" GridPane.halignment="RIGHT" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Patron Barcode" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Item Barcode" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-            <DatePicker fx:id="dueDateSelect" onAction="#setCanCheckout" onKeyPressed="#handleKeyPress" prefHeight="24.0" prefWidth="215.0" promptText="Due Date" GridPane.columnIndex="1" />
+            <DatePicker fx:id="dueDateSelect" onAction="#setCanCheckout" onKeyPressed="#handleKeyPress" prefHeight="26.0" prefWidth="252.0" promptText="Due Date" GridPane.columnIndex="1" />
             <ChoiceBox fx:id="durationSelect" onAction="#setCanCheckout" prefHeight="25.0" prefWidth="138.0" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.hgrow="SOMETIMES">
                <org.evergreen_ils.ui.offline.CircDuration label="Today + 7 Days" value="P7D" />
                <org.evergreen_ils.ui.offline.CircDuration label="Today + 14 Days" value="P14D" />
@@ -53,8 +53,11 @@
             <TextField fx:id="patronBarcodeInput" onAction="#setCanCheckout" onKeyPressed="#handleKeyPress" promptText="Patron Barcode" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <TextField fx:id="itemBarcodeInput" onAction="#setCanCheckout" onKeyPressed="#handleKeyPress" promptText="Item Barcode" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Non-Cataloged Type" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-            <ChoiceBox fx:id="nonCatSelect" disable="true" onAction="#setCanCheckout" prefHeight="24.0" prefWidth="194.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Button fx:id="checkoutButton" disable="true" mnemonicParsing="false" onAction="#checkout" text="Checkout" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
+            <ChoiceBox fx:id="nonCatSelect" disable="true" onAction="#setCanCheckout" prefHeight="26.0" prefWidth="249.0" GridPane.columnIndex="1" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="3" />
+            <Button fx:id="checkoutButton" disable="true" mnemonicParsing="false" onAction="#checkout" text="Checkout" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="2">
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin></Button>
             <CheckBox mnemonicParsing="false" text="Print Receipt" GridPane.columnIndex="1" GridPane.rowIndex="4">
                <padding>
                   <Insets right="20.0" />
@@ -64,19 +67,28 @@
                <padding>
                   <Insets right="20.0" />
                </padding>
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin>
             </CheckBox>
             <RadioButton fx:id="itemBarcodeRadio" mnemonicParsing="false" onAction="#setCanCheckout" selected="true" GridPane.rowIndex="2">
                <toggleGroup>
                   <ToggleGroup fx:id="whichCheckout" />
                </toggleGroup>
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin>
             </RadioButton>
-            <RadioButton fx:id="nonCatRadio" mnemonicParsing="false" onAction="#setCanCheckout" toggleGroup="$whichCheckout" GridPane.rowIndex="3" />
+            <RadioButton fx:id="nonCatRadio" mnemonicParsing="false" onAction="#setCanCheckout" toggleGroup="$whichCheckout" GridPane.rowIndex="3">
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin></RadioButton>
             <TextField fx:id="nonCatCountInput" maxWidth="60.0" onAction="#setCanCheckout" onKeyPressed="#handleKeyPress" prefHeight="24.0" prefWidth="127.0" promptText="Non-Cat Count" text="1" GridPane.columnIndex="2" GridPane.rowIndex="3">
                <GridPane.margin>
                   <Insets left="10.0" />
                </GridPane.margin>
             </TextField>
-            <TableView fx:id="checkoutsTable" prefHeight="244.0" prefWidth="657.0" GridPane.columnSpan="3" GridPane.rowIndex="5">
+            <TableView fx:id="checkoutsTable" prefHeight="334.0" prefWidth="666.0" GridPane.columnSpan="3" GridPane.rowIndex="5">
               <columns>
                 <TableColumn fx:id="patBarcodeCol" prefWidth="198.0" text="Patron Barcode" />
                 <TableColumn fx:id="itemBarcodeCol" minWidth="0.0" prefWidth="222.0" text="Item Barcode" />
