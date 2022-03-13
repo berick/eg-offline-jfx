@@ -11,7 +11,7 @@ git clone github.com:berick/eg-offline-jfx
 
 cd eg-offline-jfx
 
-mvn javafx:run -f pom.xml
+mvn javafx:run
 
 ```
 

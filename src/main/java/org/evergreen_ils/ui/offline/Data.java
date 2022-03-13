@@ -15,8 +15,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.PreparedStatement;
 
 public class Data {
 
@@ -29,10 +29,12 @@ public class Data {
 
     // All pending, unexported transactions
     static ObservableList<Transaction> xactsList;
+    static ObservableList<Transaction> pendingXactsList;
 
     static void connect() throws SQLException {
         conn = DriverManager.getConnection(OFFLINE_DB_URL);
         xactsList = FXCollections.observableArrayList();
+        pendingXactsList = FXCollections.observableArrayList();
     }
 
     static void createDatabase()

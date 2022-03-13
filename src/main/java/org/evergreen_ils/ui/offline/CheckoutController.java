@@ -160,6 +160,7 @@ public class CheckoutController {
             checkoutsList.addAll(xact);
 
             Data.xactsList.addAll(xact);
+            Data.pendingXactsList.addAll(xact);
 
         } catch (Exception e) {
             e.printStackTrace();

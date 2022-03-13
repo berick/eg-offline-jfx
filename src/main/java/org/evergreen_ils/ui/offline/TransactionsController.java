@@ -9,6 +9,7 @@ import javafx.application.Platform;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.CheckBox;
 
 public class TransactionsController {
 
@@ -22,6 +23,7 @@ public class TransactionsController {
     @FXML TableColumn<Transaction, String> nonCatCountCol;
     @FXML TableColumn<Transaction, String> realTimeCol;
     @FXML TableColumn<Transaction, String> exportTimeCol;
+    @FXML CheckBox limitToPending;
 
     @FXML public void initialize() throws IOException {
 
@@ -34,13 +36,25 @@ public class TransactionsController {
         realTimeCol.setCellValueFactory(new PropertyValueFactory<>("realTime"));
         exportTimeCol.setCellValueFactory(new PropertyValueFactory<>("exportTime"));
 
-        xactsTable.setItems(Data.xactsList);
+        xactsTable.setItems(Data.pendingXactsList);
     }
 
     @FXML void exportTransactions() throws IOException, SQLException {
         Data.exportPendingXactsToFile();
     }
 
+    @FXML void deletePendingTransactions() {
+    }
+
     @FXML void deleteTransactions() {
+    }
+
+    @FXML void toggleLimitToPending(ActionEvent event) {
+
+        if (limitToPending.isSelected()) {
+            xactsTable.setItems(Data.pendingXactsList);
+        } else {
+            xactsTable.setItems(Data.xactsList);
+        }
     }
 }
