@@ -38,7 +38,6 @@ public class CheckoutController {
     @FXML TableColumn<Transaction, String> patBarcodeCol;
     @FXML TableColumn<Transaction, String> itemBarcodeCol;
     @FXML TableColumn<Transaction, String> dueDateCol;
-    //@FXML RowConstraints nonCatRow;
 
     @FXML TableView<Transaction> checkoutsTable;
     ObservableList<Transaction> checkoutsList;
@@ -105,6 +104,10 @@ public class CheckoutController {
     public boolean disableCheckoutButton() {
 
         if (stringIsNone(patronBarcodeInput.getText())) {
+            return true;
+        }
+
+        if (dueDateSelect.getValue() == null && durationSelect.getValue() == null) {
             return true;
         }
 

@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="737.0" prefWidth="695.0" spacing="20.0" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.evergreen_ils.ui.offline.PrimaryController">
+<VBox prefHeight="772.0" prefWidth="768.0" spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.evergreen_ils.ui.offline.PrimaryController">
    <children>
       <MenuBar>
         <menus>
@@ -21,7 +21,7 @@
           </Menu>
         </menus>
       </MenuBar>
-      <TabPane prefHeight="637.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane prefHeight="688.0" prefWidth="728.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Checkout">
             <content>

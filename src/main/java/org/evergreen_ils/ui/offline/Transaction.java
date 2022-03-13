@@ -13,6 +13,7 @@ public class Transaction {
     private StringProperty backDate;
     private StringProperty action;
     private StringProperty realTime;
+    private StringProperty exportTime;
     private StringProperty nonCatType;
     private StringProperty nonCatCount;
 
@@ -29,6 +30,21 @@ public class Transaction {
             realTime = new SimpleStringProperty(this, "realTime");
         }
         return realTime;
+    }
+
+    public void setExportTime(String value) {
+        exportTimeProperty().set(value);
+    }
+
+    public String getExportTime() {
+        return exportTimeProperty().get();
+    }
+
+    public StringProperty exportTimeProperty() {
+        if (exportTime == null) {
+            exportTime = new SimpleStringProperty(this, "exportTime");
+        }
+        return exportTime;
     }
 
     public void setId(String value) {

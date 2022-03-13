@@ -21,6 +21,7 @@ public class TransactionsController {
     @FXML TableColumn<Transaction, String> actionCol;
     @FXML TableColumn<Transaction, String> nonCatCountCol;
     @FXML TableColumn<Transaction, String> realTimeCol;
+    @FXML TableColumn<Transaction, String> exportTimeCol;
 
     @FXML public void initialize() throws IOException {
 
@@ -31,12 +32,13 @@ public class TransactionsController {
         actionCol.setCellValueFactory(new PropertyValueFactory<>("action"));
         nonCatCountCol.setCellValueFactory(new PropertyValueFactory<>("nonCatCount"));
         realTimeCol.setCellValueFactory(new PropertyValueFactory<>("realTime"));
+        exportTimeCol.setCellValueFactory(new PropertyValueFactory<>("exportTime"));
 
         xactsTable.setItems(Data.xactsList);
     }
 
     @FXML void exportTransactions() throws IOException, SQLException {
-        Data.saveAllTransactionsToFile();
+        Data.exportPendingXactsToFile();
     }
 
     @FXML void deleteTransactions() {

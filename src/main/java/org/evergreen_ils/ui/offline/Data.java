@@ -108,7 +108,8 @@ public class Data {
     /*
     CREATE TABLE IF NOT EXISTS xact (
         id INTEGER PRIMARY KEY,
-        realtime TEXT DEFAULT (DATETIME()) NOT NULL,
+        real_time TEXT DEFAULT (DATETIME()) NOT NULL,
+        export_time TEXT,
         action TEXT,
         due_date TEXT,
         backdate TEXT,
@@ -119,11 +120,13 @@ public class Data {
     );
     */
 
-    static void saveAllTransactionsToFile() throws IOException, SQLException {
+    static void exportPendingXactsToFile() throws IOException, SQLException {
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(OFFLINE_EXPORT));
 
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM xact");
+        PreparedStatement stmt = conn.prepareStatement(
+            "SELECT * FROM xact WHERE export_time IS NULL OR export_time = ''");
+
         ResultSet set = stmt.executeQuery();
 
         while (set.next()) {
@@ -135,11 +138,13 @@ public class Data {
         writer.close();
     }
 
+
     static Transaction getXactFromDbRow(ResultSet set) throws SQLException {
         Transaction xact = new Transaction();
 
         xact.setId(set.getString("id"));
-        xact.setRealTime(set.getString("realtime"));
+        xact.setRealTime(set.getString("real_time"));
+        xact.setExportTime(set.getString("export_time"));
         xact.setAction(set.getString("action"));
         xact.setDueDate(set.getString("due_date"));
         xact.setBackDate(set.getString("backdate"));
