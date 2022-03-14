@@ -21,28 +21,36 @@ import java.sql.PreparedStatement;
 public class Data {
 
     final static String OFFLINE_DB_URL = "jdbc:sqlite:offline.db";
-    final static String RESOURCE_DIR = "org/evergreen_ils/ui/offline/";
-    final static String SCHEMA_FILE = "offline-schema.sql";
     final static String OFFLINE_EXPORT = "offline-export.txt";
 
+    static URL schemaUrl;
+
+    // sqlite3 connection.
     private static Connection conn;
 
-    // All pending, unexported transactions
+    // All transactions in our offline database
     static ObservableList<Transaction> xactsList;
+
+    // All pending (non-exported) transactions in our offline database
     static ObservableList<Transaction> pendingXactsList;
 
+    /**
+     * Connect to the offline database
+     */
     static void connect() throws SQLException {
         conn = DriverManager.getConnection(OFFLINE_DB_URL);
         xactsList = FXCollections.observableArrayList();
         pendingXactsList = FXCollections.observableArrayList();
     }
 
+    /**
+     * Create the offline database
+     */
     static void createDatabase()
         throws URISyntaxException, IOException, SQLException {
 
-        File file = getResourceFile(SCHEMA_FILE);
-
-        BufferedReader reader = new BufferedReader(new FileReader(file));
+        BufferedReader reader =
+            new BufferedReader(new FileReader(schemaUrl.getFile()));
         String line;
         String sql = "";
 
@@ -54,27 +62,18 @@ public class Data {
         stmt.execute(sql);
     }
 
-    static File getResourceFile(String fileName)
-        throws URISyntaxException, IOException {
-
-        ClassLoader classLoader = Data.class.getClassLoader();
-
-        URL resource = classLoader.getResource(RESOURCE_DIR);
-
-        return Files.walk(Paths.get(resource.toURI()))
-            .filter(Files::isRegularFile)
-            .map(x -> x.toFile())
-            .filter(x -> x.getName().equals(fileName))
-            .findFirst().get();
-    }
-
+    /**
+     * Store a list of Transaction in the offline database
+     */
     static void saveTransactions(List<Transaction> xacts) throws SQLException {
         for (Transaction xact: xacts) {
             saveTransaction(xact);
         }
     }
 
-    // Populates the Transaction with the database-generated 'id' and 'realtime'.
+    /**
+     * Store a Transaction in the offline database
+     */
     static Transaction saveTransaction(Transaction xact) throws SQLException {
 
         String sql =
@@ -122,6 +121,9 @@ public class Data {
     );
     */
 
+    /**
+     * Write pending transactions to a file
+     */
     static void exportPendingXactsToFile() throws IOException, SQLException {
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(OFFLINE_EXPORT));
@@ -141,6 +143,9 @@ public class Data {
     }
 
 
+    /**
+     * Maps a database row to an in-memory Transaction object.
+     */
     static Transaction getXactFromDbRow(ResultSet set) throws SQLException {
         Transaction xact = new Transaction();
 
@@ -158,6 +163,9 @@ public class Data {
         return xact;
     }
 
+    /**
+     * Returns the Transaction with the provided id.
+     */
     static Transaction getXactFromDatabase(String id) throws SQLException {
 
         String sql = "SELECT * FROM xact WHERE id = ?";

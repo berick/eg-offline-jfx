@@ -50,7 +50,6 @@ public class TransactionsController {
     }
 
     @FXML void toggleLimitToPending(ActionEvent event) {
-
         if (limitToPending.isSelected()) {
             xactsTable.setItems(Data.pendingXactsList);
         } else {
@@ -58,3 +57,4 @@ public class TransactionsController {
         }
     }
 }
+

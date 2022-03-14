@@ -22,6 +22,25 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+
+        Data.schemaUrl = getClass().getResource("offline-schema.sql");
+
+        try {
+            Data.connect();
+            Data.createDatabase();
+
+        } catch (Exception e) {
+
+            System.err.println("Caught another error: " + e);
+            e.printStackTrace();
+
+            Alert alert = new Alert(Alert.AlertType.ERROR,
+                "Interfact failed to launch.  See error logs for details");
+
+            alert.showAndWait();
+            Platform.exit();
+        }
+
         scene = new Scene(loadFXML("primary"));
 
         scene.getStylesheets().add(getClass()
@@ -43,13 +62,8 @@ public class App extends Application {
     public static void main(String[] args) {
         logger.info("Starting Offline UI");
 
-
         try {
-
-            Data.connect();
-            Data.createDatabase();
             launch();
-
         } catch (Exception e) {
 
             System.err.println("Caught another error: " + e);
