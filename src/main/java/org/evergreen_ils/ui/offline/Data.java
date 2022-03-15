@@ -163,7 +163,7 @@ public class Data {
         xact.setNonCatType(set.getString("noncat_type"));
         xact.setNonCatCount(set.getString("noncat_count"));
 
-        if (xact.getItemBarcode()) {
+        if (xact.getItemBarcode() != null) {
             xact.setItemLabel(xact.getItemBarcode());
         } else {
             for (NonCatType nct: nonCatTypes) {

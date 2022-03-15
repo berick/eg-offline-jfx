@@ -38,6 +38,7 @@ public class CheckoutController {
     @FXML TableColumn<Transaction, String> patBarcodeCol;
     @FXML TableColumn<Transaction, String> itemLabelCol;
     @FXML TableColumn<Transaction, String> dueDateCol;
+    @FXML TableColumn<Transaction, String> nonCatCountCol;
 
     @FXML TableView<Transaction> checkoutsTable;
     ObservableList<Transaction> checkoutsList;
@@ -47,7 +48,7 @@ public class CheckoutController {
     @FXML public void initialize() {
 
         // This is meant to be handled in the markup via onAction, but
-        // it's not firing.  *shrug*
+        // it's not firing.  I'm missing something.
         EventHandler<ActionEvent> handler = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent evt) { setCanCheckout(evt); }
         };
@@ -62,6 +63,7 @@ public class CheckoutController {
         patBarcodeCol.setCellValueFactory(new PropertyValueFactory<>("patronBarcode"));
         itemLabelCol.setCellValueFactory(new PropertyValueFactory<>("itemLabel"));
         dueDateCol.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
+        nonCatCountCol.setCellValueFactory(new PropertyValueFactory<>("nonCatCount"));
 
         checkoutsList = FXCollections.observableArrayList();
         checkoutsTable.setItems(checkoutsList);
@@ -71,7 +73,10 @@ public class CheckoutController {
         checkoutButton.setDisable(disableCheckoutButton());
 
         boolean usingBarcode = itemBarcodeRadio.isSelected();
+
         nonCatSelect.setDisable(usingBarcode);
+        nonCatCountInput.setDisable(usingBarcode);
+
         itemBarcodeInput.setDisable(!usingBarcode);
     }
 
@@ -134,7 +139,7 @@ public class CheckoutController {
         return false;
     }
 
-    int getNonCatCountValue() {
+    Integer getNonCatCountValue() {
         String count = nonCatCountInput.getText();
 
         if (stringIsNone(count)) {
@@ -162,11 +167,11 @@ public class CheckoutController {
             xact.setDueDate(dueDateSelect.getValue().toString());
         }
 
-        String nctId = nonCatSelect.getValue();
+        NonCatType nct = nonCatSelect.getValue();
 
-        if (nctId != null) {
-            xact.setNonCatType(nctId);
-            xact.setNonCatCount(getNonCatCountValue());
+        if (nct != null) {
+            xact.setNonCatType(nct.getId().toString());
+            xact.setNonCatCount(getNonCatCountValue().toString());
         } else {
             xact.setItemBarcode(itemBarcodeInput.getText());
         }
