@@ -163,6 +163,16 @@ public class Data {
         xact.setNonCatType(set.getString("noncat_type"));
         xact.setNonCatCount(set.getString("noncat_count"));
 
+        if (xact.getItemBarcode()) {
+            xact.setItemLabel(xact.getItemBarcode());
+        } else {
+            for (NonCatType nct: nonCatTypes) {
+                if (nct.getId().toString().equals(xact.getNonCatType())) {
+                    xact.setItemLabel(nct.getLabel());
+                }
+            }
+        }
+
         return xact;
     }
 
@@ -184,7 +194,7 @@ public class Data {
 
 
     // Pulls cached server data from our database into memory.
-    static void loadCachedServerValues() {
+    static void loadServerValues() {
 
         // TODO
         nonCatTypes.add(new NonCatType(1, "Paperback"));

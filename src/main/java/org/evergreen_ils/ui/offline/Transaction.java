@@ -17,6 +17,25 @@ public class Transaction {
     private StringProperty nonCatType;
     private StringProperty nonCatCount;
 
+    /* Item barcode or noncattype label */
+    private StringProperty itemLabel;
+
+    public void setItemLabel(String value) {
+        itemLabelProperty().set(value);
+    }
+
+    public String getItemLabel() {
+        return itemLabelProperty().get();
+    }
+
+    public StringProperty itemLabelProperty() {
+        if (itemLabel == null) {
+            itemLabel = new SimpleStringProperty(this, "itemLabel");
+        }
+        return itemLabel;
+    }
+
+
     public void setRealTime(String value) {
         realTimeProperty().set(value);
     }

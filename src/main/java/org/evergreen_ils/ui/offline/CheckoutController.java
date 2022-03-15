@@ -36,7 +36,7 @@ public class CheckoutController {
     @FXML RadioButton nonCatRadio;
     @FXML TextField nonCatCountInput;
     @FXML TableColumn<Transaction, String> patBarcodeCol;
-    @FXML TableColumn<Transaction, String> itemBarcodeCol;
+    @FXML TableColumn<Transaction, String> itemLabelCol;
     @FXML TableColumn<Transaction, String> dueDateCol;
 
     @FXML TableView<Transaction> checkoutsTable;
@@ -60,7 +60,7 @@ public class CheckoutController {
         }
 
         patBarcodeCol.setCellValueFactory(new PropertyValueFactory<>("patronBarcode"));
-        itemBarcodeCol.setCellValueFactory(new PropertyValueFactory<>("itemBarcode"));
+        itemLabelCol.setCellValueFactory(new PropertyValueFactory<>("itemLabel"));
         dueDateCol.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
 
         checkoutsList = FXCollections.observableArrayList();
@@ -126,33 +126,50 @@ public class CheckoutController {
                 return true;
             }
 
-            String count = nonCatCountInput.getText();
-
-            if (stringIsNone(count) || Integer.parseInt(count) < 0) {
+            if (getNonCatCountValue() == null) {
                 return true;
             }
-
-            System.out.println("COUNT " + count);
         }
 
         return false;
     }
 
-    public void checkout() {
+    int getNonCatCountValue() {
+        String count = nonCatCountInput.getText();
 
-        String dueDate;
-
-        if (dueDateSelect.getValue() == null) {
-            dueDate = calcDueDate(durationSelect.getValue().toValue());
-        } else {
-            dueDate = dueDateSelect.getValue().toString();
+        if (stringIsNone(count)) {
+            return null;
         }
 
+        try {
+            int c = Integer.parseInt(count);
+            if (c < 0) { return null; }
+            return c;
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public void checkout() {
+
         Transaction xact = new Transaction();
-        xact.setPatronBarcode(patronBarcodeInput.getText());
-        xact.setItemBarcode(itemBarcodeInput.getText());
-        xact.setDueDate(dueDate);
         xact.setAction("checkout");
+        xact.setPatronBarcode(patronBarcodeInput.getText());
+
+        if (dueDateSelect.getValue() == null) {
+            xact.setDueDate(calcDueDate(durationSelect.getValue().toValue()));
+        } else {
+            xact.setDueDate(dueDateSelect.getValue().toString());
+        }
+
+        String nctId = nonCatSelect.getValue();
+
+        if (nctId != null) {
+            xact.setNonCatType(nctId);
+            xact.setNonCatCount(getNonCatCountValue());
+        } else {
+            xact.setItemBarcode(itemBarcodeInput.getText());
+        }
 
         try {
             xact = Data.saveTransaction(xact);

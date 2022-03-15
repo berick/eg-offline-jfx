@@ -16,7 +16,7 @@ public class TransactionsController {
     @FXML TableView<Transaction> xactsTable;
 
     @FXML TableColumn<Transaction, String> patronBarcodeCol;
-    @FXML TableColumn<Transaction, String> itemBarcodeCol;
+    @FXML TableColumn<Transaction, String> itemLabelCol;
     @FXML TableColumn<Transaction, String> dueDateCol;
     @FXML TableColumn<Transaction, String> backDateCol;
     @FXML TableColumn<Transaction, String> actionCol;
@@ -28,7 +28,7 @@ public class TransactionsController {
     @FXML public void initialize() throws IOException {
 
         patronBarcodeCol.setCellValueFactory(new PropertyValueFactory<>("patronBarcode"));
-        itemBarcodeCol.setCellValueFactory(new PropertyValueFactory<>("itemBarcode"));
+        itemLabelCol.setCellValueFactory(new PropertyValueFactory<>("itemLabel"));
         dueDateCol.setCellValueFactory(new PropertyValueFactory<>("dueDate"));
         backDateCol.setCellValueFactory(new PropertyValueFactory<>("backDate"));
         actionCol.setCellValueFactory(new PropertyValueFactory<>("action"));

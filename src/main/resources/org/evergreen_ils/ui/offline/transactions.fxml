@@ -38,7 +38,7 @@
                 <TableColumn fx:id="realTimeCol" prefWidth="74.0" text="Created" />
                 <TableColumn fx:id="actionCol" prefWidth="73.0" text="Action" />
                 <TableColumn fx:id="patronBarcodeCol" prefWidth="108.0" text="Patron" />
-                <TableColumn fx:id="itemBarcodeCol" prefWidth="82.0" text="Item" />
+                <TableColumn fx:id="itemLabelCol" prefWidth="82.0" text="Item" />
                 <TableColumn fx:id="nonCatCountCol" prefWidth="73.0" text="Count" />
                 <TableColumn fx:id="dueDateCol" minWidth="0.0" prefWidth="108.0" text="Due Date" />
                   <TableColumn fx:id="backDateCol" prefWidth="90.0" text="Backdate" />

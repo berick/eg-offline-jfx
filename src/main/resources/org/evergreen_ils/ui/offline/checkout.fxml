@@ -91,7 +91,7 @@
             <TableView fx:id="checkoutsTable" prefHeight="334.0" prefWidth="666.0" GridPane.columnSpan="3" GridPane.rowIndex="5">
               <columns>
                 <TableColumn fx:id="patBarcodeCol" prefWidth="198.0" text="Patron Barcode" />
-                <TableColumn fx:id="itemBarcodeCol" minWidth="0.0" prefWidth="222.0" text="Item Barcode" />
+                <TableColumn fx:id="itemLabelCol" minWidth="0.0" prefWidth="222.0" text="Item Barcode" />
                   <TableColumn fx:id="dueDateCol" prefWidth="173.0" text="Due Date" />
               </columns>
             </TableView>
