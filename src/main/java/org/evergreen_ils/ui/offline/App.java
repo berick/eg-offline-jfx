@@ -28,6 +28,7 @@ public class App extends Application {
         try {
             Data.connect();
             Data.createDatabase();
+            Data.loadCachedServerValues();
 
         } catch (Exception e) {
 

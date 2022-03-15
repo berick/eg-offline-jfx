@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
@@ -22,6 +23,8 @@ public class Data {
 
     final static String OFFLINE_DB_URL = "jdbc:sqlite:offline.db";
     final static String OFFLINE_EXPORT = "offline-export.txt";
+
+    static ArrayList<NonCatType> nonCatTypes = new ArrayList<NonCatType>();
 
     static URL schemaUrl;
 
@@ -177,6 +180,15 @@ public class Data {
         if (!set.next()) { return null; }
 
         return Data.getXactFromDbRow(set);
+    }
+
+
+    // Pulls cached server data from our database into memory.
+    static void loadCachedServerValues() {
+
+        // TODO
+        nonCatTypes.add(new NonCatType(1, "Paperback"));
+        nonCatTypes.add(new NonCatType(2, "Newspaper"));
     }
 }
 

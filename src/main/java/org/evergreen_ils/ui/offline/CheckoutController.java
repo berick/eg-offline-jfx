@@ -55,9 +55,9 @@ public class CheckoutController {
         durationSelect.setOnAction(handler);
         nonCatSelect.setOnAction(handler);
 
-        // TODO these will come from the server.
-        nonCatSelect.getItems().add(new NonCatType(1, "Paperback"));
-        nonCatSelect.getItems().add(new NonCatType(2, "Newspaper"));
+        for (NonCatType nct: Data.nonCatTypes) {
+            nonCatSelect.getItems().add(nct);
+        }
 
         patBarcodeCol.setCellValueFactory(new PropertyValueFactory<>("patronBarcode"));
         itemBarcodeCol.setCellValueFactory(new PropertyValueFactory<>("itemBarcode"));
