@@ -76,8 +76,11 @@ public class CheckoutController {
 
         nonCatSelect.setDisable(usingBarcode);
         nonCatCountInput.setDisable(usingBarcode);
-
         itemBarcodeInput.setDisable(!usingBarcode);
+
+        if (usingBarcode) {
+            nonCatCountInput.setText("1");
+        }
     }
 
     public boolean stringIsNone(String s) {
