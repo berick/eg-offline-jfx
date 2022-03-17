@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
@@ -20,6 +21,9 @@ import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 
 public class Data {
+
+    static final Logger logger = 
+        Logger.getLogger(App.class.getPackage().getName());
 
     final static String OFFLINE_DB_URL = "jdbc:sqlite:offline.db";
     final static String OFFLINE_EXPORT = "offline-export.txt";

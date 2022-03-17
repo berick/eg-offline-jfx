@@ -43,7 +43,8 @@ public class CheckoutController {
     @FXML TableView<Transaction> checkoutsTable;
     ObservableList<Transaction> checkoutsList;
 
-    static final Logger logger = Logger.getLogger("org.evergreen_ils.ui.offline");
+    static final Logger logger = 
+        Logger.getLogger(App.class.getPackage().getName());
 
     @FXML public void initialize() {
 

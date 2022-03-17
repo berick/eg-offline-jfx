@@ -10,8 +10,12 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.CheckBox;
+import java.util.logging.Logger;
 
 public class TransactionsController {
+
+    static final Logger logger = 
+        Logger.getLogger(App.class.getPackage().getName());
 
     @FXML TableView<Transaction> xactsTable;
 

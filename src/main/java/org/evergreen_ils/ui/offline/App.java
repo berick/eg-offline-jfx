@@ -10,6 +10,7 @@ import javafx.application.Platform;
 
 import java.io.IOException;
 import java.util.logging.*;
+import java.util.logging.Logger;
 
 /**
  * JavaFX App
@@ -18,12 +19,16 @@ public class App extends Application {
 
     private static Scene scene;
 
-    static final Logger logger = Logger.getLogger("org.evergreen_ils.ui.offline");
+    static final Logger logger = 
+        Logger.getLogger(App.class.getPackage().getName());
 
     @Override
     public void start(Stage stage) throws IOException {
 
         Data.schemaUrl = getClass().getResource("offline-schema.sql");
+
+
+        System.out.println("PACKAGE: " + App.class.getPackage().getName());
 
         try {
             Data.connect();
