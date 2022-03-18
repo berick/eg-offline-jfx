@@ -3,6 +3,8 @@ package org.evergreen_ils.ui.offline;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.HttpClient;
+import java.net.HttpRequest;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -199,6 +201,17 @@ public class Data {
 
     // Pulls cached server data from our database into memory.
     static void loadServerValues() {
+
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+              .uri(URI.create("http://openjdk.java.net/"))
+              .build();
+
+        client.sendAsync(request, BodyHandlers.ofString())
+              .thenApply(HttpResponse::body)
+              .thenAccept(System.out::println)
+              .join();
 
         // TODO
         nonCatTypes.add(new NonCatType(1, "Paperback"));
