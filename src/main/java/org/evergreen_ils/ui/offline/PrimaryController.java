@@ -31,7 +31,8 @@ public class PrimaryController {
 
         logger.info("Using config: " + Data.activeConfig);
 
-        Data.loadServerValues();
+        //Data.loadServerValues();
+        // TODO after login
 
         //tabs.setVisible(false);
     }

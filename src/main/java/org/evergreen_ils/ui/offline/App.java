@@ -29,6 +29,7 @@ public class App extends Application {
         Data.schemaUrl = getClass().getResource(OFFLINE_SCHEMA_FILE);
 
         try {
+
             Data.connect();
             Data.createDatabase();
 
@@ -38,7 +39,7 @@ public class App extends Application {
             e.printStackTrace();
 
             Alert alert = new Alert(Alert.AlertType.ERROR,
-                "Interfact failed to launch.  See error logs for details");
+                "Interface failed to launch.  See error logs for details");
 
             alert.showAndWait();
             Platform.exit();
@@ -51,6 +52,8 @@ public class App extends Application {
 
         stage.setScene(scene);
         stage.show();
+
+        setRoot("login");
     }
 
     static void setRoot(String fxml) throws IOException {

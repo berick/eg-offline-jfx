@@ -46,6 +46,7 @@ public class Data {
     static URL schemaUrl;
 
     static Config activeConfig;
+    static List<Config> configList = new ArrayList<Config>();
 
     // sqlite3 connection.
     private static Connection conn;
@@ -146,8 +147,6 @@ public class Data {
 
         ResultSet set = stmt.executeQuery();
 
-        List<Config> configs = new ArrayList<Config>();
-
         while (set.next()) {
             Config config = new Config();
             config.setHostname(set.getString("hostname"));
@@ -160,10 +159,10 @@ public class Data {
 
             logger.info("Found config: " + config);
 
-            configs.add(config);
+            configList.add(config);
         }
 
-        return configs;
+        return configList;
     }
 
     /*
@@ -257,6 +256,9 @@ public class Data {
             // TODO throw exception
             return;
         }
+
+        // TODO make this configurable for dev purposes only.
+        //SSLBypass.execute();
 
         HttpClient client = HttpClient.newHttpClient();
 
