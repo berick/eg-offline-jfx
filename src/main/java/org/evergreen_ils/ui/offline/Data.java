@@ -35,6 +35,14 @@ public class Data {
 
     static ArrayList<NonCatType> nonCatTypes = new ArrayList<NonCatType>();
 
+    // These are kept in memory for the duration of the running process
+    // so we can refresh the offline data and upload transactions
+    // in the background w/o prompting for a login.
+    static String username;
+    static String password;
+    static String authtoken;
+
+    // Points to our offline DB schema definition file.
     static URL schemaUrl;
 
     static Config activeConfig;

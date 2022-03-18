@@ -21,7 +21,7 @@
           </Menu>
         </menus>
       </MenuBar>
-      <TabPane prefHeight="685.0" prefWidth="734.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="tabs" prefHeight="685.0" prefWidth="734.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Checkout">
             <content>

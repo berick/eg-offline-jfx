@@ -10,12 +10,15 @@ import javafx.fxml.FXML;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import javafx.application.Platform;
+import javafx.scene.control.TabPane;
 
 
 public class PrimaryController {
 
     static final Logger logger =
         Logger.getLogger(App.class.getPackage().getName());
+
+    @FXML TabPane tabs;
 
     @FXML private void initialize() throws java.sql.SQLException {
 
@@ -29,6 +32,8 @@ public class PrimaryController {
         logger.info("Using config: " + Data.activeConfig);
 
         Data.loadServerValues();
+
+        //tabs.setVisible(false);
     }
 
     @FXML private void close(ActionEvent event) {
