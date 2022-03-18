@@ -17,3 +17,12 @@ CREATE TABLE IF NOT EXISTS xact (
 );
 
 
+/*
+ * An offline client can have multiple host+workstation combinations.
+ */
+CREATE TABLE IF NOT EXISTS config (
+    is_default INT DEFAULT 0,
+    hostname TEXT,
+    workstation TEXT
+);
+

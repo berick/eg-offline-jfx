@@ -3,8 +3,11 @@ package org.evergreen_ils.ui.offline;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.HttpClient;
-import java.net.HttpRequest;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -24,7 +27,7 @@ import java.sql.PreparedStatement;
 
 public class Data {
 
-    static final Logger logger = 
+    static final Logger logger =
         Logger.getLogger(App.class.getPackage().getName());
 
     final static String OFFLINE_DB_URL = "jdbc:sqlite:offline.db";
@@ -33,6 +36,8 @@ public class Data {
     static ArrayList<NonCatType> nonCatTypes = new ArrayList<NonCatType>();
 
     static URL schemaUrl;
+
+    static Config activeConfig;
 
     // sqlite3 connection.
     private static Connection conn;
@@ -67,8 +72,21 @@ public class Data {
             sql += line + "\n";
         }
 
-        Statement stmt = conn.createStatement();
-        stmt.execute(sql);
+
+        // No way to execute multiple statements from a single file in
+        // Java, short of executing a bare sqlite3 command.  Split on
+        // statement separator and feed them.
+        // TODO: break these into per-table files?
+        // https://stackoverflow.com/questions/2071682/how-to-execute-sql-script-file-in-java
+        String[] inserts = sql.split(";");
+
+        for (String insert: sql.split(";")) {
+            insert = insert.trim();
+            if (insert.length() > 0) {
+                Statement stmt = conn.createStatement();
+                stmt.execute(insert + ";");
+            }
+        }
     }
 
     /**
@@ -113,6 +131,31 @@ public class Data {
         }
 
         return null;
+    }
+
+    static List<Config> getConfigOptions() throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM config");
+
+        ResultSet set = stmt.executeQuery();
+
+        List<Config> configs = new ArrayList<Config>();
+
+        while (set.next()) {
+            Config config = new Config();
+            config.setHostname(set.getString("hostname"));
+            config.setWorkstation(set.getString("workstation"));
+            config.setIsDefault(set.getInt("is_default") == 1);
+
+            if (config.getIsDefault()) {
+                activeConfig = config;
+            }
+
+            logger.info("Found config: " + config);
+
+            configs.add(config);
+        }
+
+        return configs;
     }
 
     /*
@@ -202,10 +245,24 @@ public class Data {
     // Pulls cached server data from our database into memory.
     static void loadServerValues() {
 
+        if (activeConfig == null) {
+            // TODO throw exception
+            return;
+        }
+
         HttpClient client = HttpClient.newHttpClient();
 
+        String uri = "https://" + activeConfig.hostname + "/offline-data";
+        // TODO login support
+        String ses = "...";
+
+        uri += "?ses=" + ses;
+
+        logger.info("Loading data via url: " + uri);
+
         HttpRequest request = HttpRequest.newBuilder()
-              .uri(URI.create("http://openjdk.java.net/"))
+              //.uri(URI.create("http://openjdk.java.net/"))
+              .uri(URI.create(uri))
               .build();
 
         client.sendAsync(request, BodyHandlers.ofString())
