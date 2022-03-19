@@ -31,7 +31,20 @@ public class LoginController {
         }
     }
 
-    @FXML private void login() {
+    @FXML private void login() throws java.io.IOException {
+
+        Data.username = usernameInput.getText();
+        Data.password = passwordInput.getText();
+        
+        String ws = workstationSelect.getValue();
+
+        Config config = Data.getConfigByWorkstation(ws);
+
+        Data.activeConfig = config;
+
+        Data.loadServerValues();
+
+        App.setRoot("primary");
     }
 
     @FXML private void exit() {

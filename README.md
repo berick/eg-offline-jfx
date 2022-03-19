@@ -33,5 +33,6 @@ https://medium.com/expedia-group-tech/how-to-import-public-certificates-into-jav
 
 ```sh
 # Roughly...
-keytool -keystore /etc/ssl/certs/java/cacerts -import -alias Chomp.dev -file /path/to/my/cert.cer
+# password defaults to 'changeit'
+keytool -keystore /etc/ssl/certs/java/cacerts -import -alias friendly-cert-name -file /path/to/my/cert.cer
 ```

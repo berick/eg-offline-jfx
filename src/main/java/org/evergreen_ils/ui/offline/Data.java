@@ -8,6 +8,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -165,6 +166,17 @@ public class Data {
         return configList;
     }
 
+    static Config getConfigByWorkstation(String ws) {
+        
+        for (Config config: configList) {
+            if (config.getWorkstation().equals(ws)) {
+                return config;
+            }
+        }
+
+        return null;
+    }
+
     /*
     CREATE TABLE IF NOT EXISTS xact (
         id INTEGER PRIMARY KEY,
@@ -248,32 +260,40 @@ public class Data {
         return Data.getXactFromDbRow(set);
     }
 
+    // Bit of a shortcut
+    static String encode(String v) throws UnsupportedEncodingException {
+        return URLEncoder.encode(v, StandardCharsets.UTF_8.toString());
+    }
 
-    // Pulls cached server data from our database into memory.
     static void loadServerValues() {
 
-        if (activeConfig == null) {
-            // TODO throw exception
-            return;
-        }
-
-        // TODO make this configurable for dev purposes only.
-        //SSLBypass.execute();
+        if (activeConfig == null) { return; }
 
         HttpClient client = HttpClient.newHttpClient();
 
-        String uri = "https://" + activeConfig.hostname + "/offline-data";
-        // TODO login support
-        String ses = "...";
+        String url = "";
 
-        uri += "?ses=" + ses;
+        try {
 
-        logger.info("Loading data via url: " + uri);
+            url = String.format(
+                "https://%s/offline-data?workstation=%s&username=%s&password=%s",
+                Data.encode(activeConfig.getHostname()),
+                Data.encode(activeConfig.getWorkstation()),
+                Data.encode(Data.username),
+                Data.encode(Data.password)
+            );
 
-        HttpRequest request = HttpRequest.newBuilder()
-              //.uri(URI.create("http://openjdk.java.net/"))
-              .uri(URI.create(uri))
-              .build();
+        } catch (UnsupportedEncodingException e) {
+
+            logger.severe("Cannot create server URL: " + url);
+            e.printStackTrace();
+            return;
+        }
+
+        // NOTE beware logging password
+        logger.info("Loading data via url: " + url);
+
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
 
         client.sendAsync(request, BodyHandlers.ofString())
               .thenApply(HttpResponse::body)
