@@ -1,5 +1,6 @@
 package org.evergreen_ils.ui.offline;
 
+import org.json.*;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.function.Consumer;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 
@@ -33,6 +35,7 @@ public class Data {
 
     final static String OFFLINE_DB_URL = "jdbc:sqlite:offline.db";
     final static String OFFLINE_EXPORT = "offline-export.txt";
+    final static String OFFLINE_DATA_FILE = "offline-data.json";
 
     static ArrayList<NonCatType> nonCatTypes = new ArrayList<NonCatType>();
 
@@ -177,21 +180,6 @@ public class Data {
         return null;
     }
 
-    /*
-    CREATE TABLE IF NOT EXISTS xact (
-        id INTEGER PRIMARY KEY,
-        real_time TEXT DEFAULT (DATETIME()) NOT NULL,
-        export_time TEXT,
-        action TEXT,
-        due_date TEXT,
-        backdate TEXT,
-        item_barcode TEXT,
-        noncat_type TEXT,
-        noncat_count TEXT,
-        patron_barcode TEXT
-    );
-    */
-
     /**
      * Write pending transactions to a file
      */
@@ -267,9 +255,11 @@ public class Data {
 
     static void loadServerValues() {
 
-        if (activeConfig == null) { return; }
+        // TODO
+        // If we are connected to the network, fetch updated data
+        // Otherwise, load the JSON file
 
-        HttpClient client = HttpClient.newHttpClient();
+        if (activeConfig == null) { return; }
 
         String url = "";
 
@@ -290,19 +280,55 @@ public class Data {
             return;
         }
 
-        // NOTE beware logging password
-        logger.info("Loading data via url: " + url);
-
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
 
-        client.sendAsync(request, BodyHandlers.ofString())
-              .thenApply(HttpResponse::body)
-              .thenAccept(System.out::println)
-              .join();
+        HttpClient client = HttpClient.newHttpClient();
 
-        // TODO
+        client.sendAsync(request, BodyHandlers.ofString())
+            .thenApply(HttpResponse::body)
+            .thenAccept(new Consumer<String>() {
+                public void accept(String body) {
+                    Data.absorbOfflineData(body);
+                }
+            })
+            .join();
+    }
+
+    static void absorbOfflineData(String data) {
+
+        try {
+            BufferedWriter writer = 
+                new BufferedWriter(new FileWriter(OFFLINE_DATA_FILE));
+            writer.write(data);
+            writer.close();
+        } catch (IOException e) {
+            logger.severe("Cannot write data file " + OFFLINE_DATA_FILE);
+            e.printStackTrace();
+            return;
+        }
+
+        JSONObject obj = new JSONObject(data);
+
+        JSONArray ncTypes = obj.getJSONArray("cnct");
+
+        for (int i = 0; i < ncTypes.length(); i++) {
+            JSONObject nct = ncTypes.getJSONObject(i);
+
+            // TODO check for string version if ID
+            // handle exceptions, etc.
+
+            nonCatTypes.add(
+                new NonCatType(
+                    nct.getInt("id"),
+                    nct.getString("name")
+                )
+            );
+        }
+
+        /*
         nonCatTypes.add(new NonCatType(1, "Paperback"));
         nonCatTypes.add(new NonCatType(2, "Newspaper"));
+        */
     }
 }
 
