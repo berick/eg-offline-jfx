@@ -42,6 +42,7 @@ public class LoginController {
 
         Data.activeConfig = config;
 
+        // Always refresh server values after a login.
         Data.loadServerValues();
 
         App.setRoot("primary");

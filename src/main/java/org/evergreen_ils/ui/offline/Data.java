@@ -294,6 +294,27 @@ public class Data {
             .join();
     }
 
+    static void readOfflineDataFile() {
+
+        BufferedReader reader;
+        String json = "";
+
+        try {
+            reader = new BufferedReader(new FileReader(OFFLINE_DATA_FILE));
+
+            String line;
+            while ( (line = reader.readLine()) != null) {
+                json += line;
+            }
+
+        } catch (Exception e) {
+            logger.info("No offline data file to read: " + e);
+            return;
+        }
+
+        Data.absorbOfflineData(json);
+    }
+
     static void absorbOfflineData(String data) {
 
         try {
@@ -314,8 +335,7 @@ public class Data {
         for (int i = 0; i < ncTypes.length(); i++) {
             JSONObject nct = ncTypes.getJSONObject(i);
 
-            // TODO check for string version if ID
-            // handle exceptions, etc.
+            logger.info("loading noncat type " + nct);
 
             nonCatTypes.add(
                 new NonCatType(
@@ -324,11 +344,6 @@ public class Data {
                 )
             );
         }
-
-        /*
-        nonCatTypes.add(new NonCatType(1, "Paperback"));
-        nonCatTypes.add(new NonCatType(2, "Newspaper"));
-        */
     }
 }
 
