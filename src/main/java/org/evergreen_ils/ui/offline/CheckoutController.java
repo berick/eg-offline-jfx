@@ -57,7 +57,7 @@ public class CheckoutController {
         durationSelect.setOnAction(handler);
         nonCatSelect.setOnAction(handler);
 
-        for (NonCatType nct: Data.nonCatTypes) {
+        for (NonCatType nct: App.data.nonCatTypes) {
             nonCatSelect.getItems().add(nct);
         }
 
@@ -181,12 +181,12 @@ public class CheckoutController {
         }
 
         try {
-            xact = Data.saveTransaction(xact);
+            xact = App.data.saveTransaction(xact);
 
             checkoutsList.addAll(xact);
 
-            Data.xactsList.addAll(xact);
-            Data.pendingXactsList.addAll(xact);
+            App.data.xactsList.addAll(xact);
+            App.data.pendingXactsList.addAll(xact);
 
         } catch (Exception e) {
             e.printStackTrace();

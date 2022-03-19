@@ -23,15 +23,15 @@ public class PrimaryController {
     @FXML private void initialize() throws java.sql.SQLException {
 
 
-        List<Config> configs = Data.getConfigOptions();
+        List<Config> configs = App.data.getConfigOptions();
 
-        if (configs.size() == 0 || Data.activeConfig == null) {
+        if (configs.size() == 0 || App.data.activeConfig == null) {
             // TODO prompt for host+workstation
         }
 
-        logger.info("Using config: " + Data.activeConfig);
+        logger.info("Using config: " + App.data.activeConfig);
 
-        //Data.loadServerValues();
+        //App.data.loadServerValues();
         // TODO after login
 
         //tabs.setVisible(false);

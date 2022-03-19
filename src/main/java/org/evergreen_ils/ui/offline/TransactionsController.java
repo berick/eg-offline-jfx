@@ -40,11 +40,11 @@ public class TransactionsController {
         realTimeCol.setCellValueFactory(new PropertyValueFactory<>("realTime"));
         exportTimeCol.setCellValueFactory(new PropertyValueFactory<>("exportTime"));
 
-        xactsTable.setItems(Data.pendingXactsList);
+        xactsTable.setItems(App.data.pendingXactsList);
     }
 
     @FXML void exportTransactions() throws IOException, SQLException {
-        Data.exportPendingXactsToFile();
+        App.data.exportPendingXactsToFile();
     }
 
     @FXML void deletePendingTransactions() {
@@ -55,9 +55,9 @@ public class TransactionsController {
 
     @FXML void toggleLimitToPending(ActionEvent event) {
         if (limitToPending.isSelected()) {
-            xactsTable.setItems(Data.pendingXactsList);
+            xactsTable.setItems(App.data.pendingXactsList);
         } else {
-            xactsTable.setItems(Data.xactsList);
+            xactsTable.setItems(App.data.xactsList);
         }
     }
 }

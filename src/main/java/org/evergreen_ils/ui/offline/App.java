@@ -20,18 +20,21 @@ public class App extends Application {
     private static String OFFLINE_SCHEMA_FILE = "offline-schema.sql";
     private static Scene scene;
 
+    static final Net net = new Net();
+    static final Data data = new Data();
+
     static final Logger logger =
         Logger.getLogger(App.class.getPackage().getName());
 
     @Override
     public void start(Stage stage) throws IOException {
 
-        Data.schemaUrl = getClass().getResource(OFFLINE_SCHEMA_FILE);
+        App.data.schemaUrl = getClass().getResource(OFFLINE_SCHEMA_FILE);
 
         try {
 
-            Data.connect();
-            Data.createDatabase();
+            App.data.connect();
+            App.data.createDatabase();
 
         } catch (Exception e) {
 

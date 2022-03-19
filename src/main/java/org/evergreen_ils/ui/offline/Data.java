@@ -37,34 +37,34 @@ public class Data {
     final static String OFFLINE_EXPORT = "offline-export.txt";
     final static String OFFLINE_DATA_FILE = "offline-data.json";
 
-    static ArrayList<NonCatType> nonCatTypes = new ArrayList<NonCatType>();
+    ArrayList<NonCatType> nonCatTypes = new ArrayList<NonCatType>();
 
     // These are kept in memory for the duration of the running process
     // so we can refresh the offline data and upload transactions
     // in the background w/o prompting for a login.
-    static String username;
-    static String password;
-    static String authtoken;
+    String username;
+    String password;
+    String authtoken;
 
     // Points to our offline DB schema definition file.
-    static URL schemaUrl;
+    URL schemaUrl;
 
-    static Config activeConfig;
-    static List<Config> configList = new ArrayList<Config>();
+    Config activeConfig;
+    List<Config> configList = new ArrayList<Config>();
 
     // sqlite3 connection.
-    private static Connection conn;
+    private Connection conn;
 
     // All transactions in our offline database
-    static ObservableList<Transaction> xactsList;
+    ObservableList<Transaction> xactsList;
 
     // All pending (non-exported) transactions in our offline database
-    static ObservableList<Transaction> pendingXactsList;
+    ObservableList<Transaction> pendingXactsList;
 
     /**
      * Connect to the offline database
      */
-    static void connect() throws SQLException {
+    void connect() throws SQLException {
         conn = DriverManager.getConnection(OFFLINE_DB_URL);
         xactsList = FXCollections.observableArrayList();
         pendingXactsList = FXCollections.observableArrayList();
@@ -73,7 +73,7 @@ public class Data {
     /**
      * Create the offline database
      */
-    static void createDatabase()
+    void createDatabase()
         throws URISyntaxException, IOException, SQLException {
 
         BufferedReader reader =
@@ -105,7 +105,7 @@ public class Data {
     /**
      * Store a list of Transaction in the offline database
      */
-    static void saveTransactions(List<Transaction> xacts) throws SQLException {
+    void saveTransactions(List<Transaction> xacts) throws SQLException {
         for (Transaction xact: xacts) {
             saveTransaction(xact);
         }
@@ -114,7 +114,7 @@ public class Data {
     /**
      * Store a Transaction in the offline database
      */
-    static Transaction saveTransaction(Transaction xact) throws SQLException {
+    Transaction saveTransaction(Transaction xact) throws SQLException {
 
         String sql =
             "INSERT INTO xact (action, due_date, backdate, "
@@ -140,13 +140,13 @@ public class Data {
 
         if (generatedKeys.next()) {
             String id = generatedKeys.getString(1);
-            return Data.getXactFromDatabase(id);
+            return getXactFromDatabase(id);
         }
 
         return null;
     }
 
-    static List<Config> getConfigOptions() throws SQLException {
+    List<Config> getConfigOptions() throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM config");
 
         ResultSet set = stmt.executeQuery();
@@ -169,21 +169,10 @@ public class Data {
         return configList;
     }
 
-    static Config getConfigByWorkstation(String ws) {
-        
-        for (Config config: configList) {
-            if (config.getWorkstation().equals(ws)) {
-                return config;
-            }
-        }
-
-        return null;
-    }
-
     /**
      * Write pending transactions to a file
      */
-    static void exportPendingXactsToFile() throws IOException, SQLException {
+    void exportPendingXactsToFile() throws IOException, SQLException {
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(OFFLINE_EXPORT));
 
@@ -193,7 +182,7 @@ public class Data {
         ResultSet set = stmt.executeQuery();
 
         while (set.next()) {
-            Transaction xact = Data.getXactFromDbRow(set);
+            Transaction xact = getXactFromDbRow(set);
             writer.write(xact.toJson());
             writer.newLine();
         }
@@ -205,7 +194,7 @@ public class Data {
     /**
      * Maps a database row to an in-memory Transaction object.
      */
-    static Transaction getXactFromDbRow(ResultSet set) throws SQLException {
+    Transaction getXactFromDbRow(ResultSet set) throws SQLException {
         Transaction xact = new Transaction();
 
         xact.setId(set.getString("id"));
@@ -235,7 +224,7 @@ public class Data {
     /**
      * Returns the Transaction with the provided id.
      */
-    static Transaction getXactFromDatabase(String id) throws SQLException {
+    Transaction getXactFromDatabase(String id) throws SQLException {
 
         String sql = "SELECT * FROM xact WHERE id = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
@@ -245,19 +234,20 @@ public class Data {
 
         if (!set.next()) { return null; }
 
-        return Data.getXactFromDbRow(set);
+        return getXactFromDbRow(set);
     }
 
     // Bit of a shortcut
-    static String encode(String v) throws UnsupportedEncodingException {
+    String encode(String v) throws UnsupportedEncodingException {
         return URLEncoder.encode(v, StandardCharsets.UTF_8.toString());
     }
 
-    static void loadServerValues() {
+    void loadServerData() {
 
-        // TODO
-        // If we are connected to the network, fetch updated data
-        // Otherwise, load the JSON file
+        if (!App.net.canConnect(activeConfig.getHostname())) {
+            readOfflineDataFile();
+            return;
+        }
 
         if (activeConfig == null) { return; }
 
@@ -267,10 +257,10 @@ public class Data {
 
             url = String.format(
                 "https://%s/offline-data?workstation=%s&username=%s&password=%s",
-                Data.encode(activeConfig.getHostname()),
-                Data.encode(activeConfig.getWorkstation()),
-                Data.encode(Data.username),
-                Data.encode(Data.password)
+                encode(activeConfig.getHostname()),
+                encode(activeConfig.getWorkstation()),
+                encode(username),
+                encode(password)
             );
 
         } catch (UnsupportedEncodingException e) {
@@ -288,13 +278,13 @@ public class Data {
             .thenApply(HttpResponse::body)
             .thenAccept(new Consumer<String>() {
                 public void accept(String body) {
-                    Data.absorbOfflineData(body);
+                    absorbOfflineData(body);
                 }
             })
             .join();
     }
 
-    static void readOfflineDataFile() {
+    void readOfflineDataFile() {
 
         BufferedReader reader;
         String json = "";
@@ -312,10 +302,10 @@ public class Data {
             return;
         }
 
-        Data.absorbOfflineData(json);
+        absorbOfflineData(json);
     }
 
-    static void absorbOfflineData(String data) {
+    void absorbOfflineData(String data) {
 
         try {
             BufferedWriter writer = 

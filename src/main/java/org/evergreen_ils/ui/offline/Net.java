@@ -9,8 +9,12 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.net.URLEncoder;
+import java.util.logging.Logger;
 
 public class Net {
+
+    static final Logger logger =
+        Logger.getLogger(App.class.getPackage().getName());
 
     // True if the last call to canConnect returned true;
     boolean isOnline = false;
@@ -31,6 +35,7 @@ public class Net {
         try {
             response = client.send(request, BodyHandlers.ofString());
         } catch (Exception e) {
+            logger.info("Cannot connect to " + hostname + ": " + e);
             return false;
         }
 

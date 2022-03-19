@@ -23,27 +23,33 @@ public class LoginController {
 
     @FXML TextField usernameInput;
     @FXML PasswordField passwordInput;
+    @FXML ChoiceBox<String> hostnameSelect;
     @FXML ChoiceBox<String> workstationSelect;
 
     @FXML private void initialize() {
-        for (Config config: Data.configList) {
+        for (Config config: App.data.configList) {
             workstationSelect.getItems().add(config.getWorkstation());
+            hostnameSelect.getItems().add(config.getHostname());
         }
     }
 
     @FXML private void login() throws java.io.IOException {
 
-        Data.username = usernameInput.getText();
-        Data.password = passwordInput.getText();
+        App.data.username = usernameInput.getText();
+        App.data.password = passwordInput.getText();
         
         String ws = workstationSelect.getValue();
+        String host = hostnameSelect.getValue();
 
-        Config config = Data.getConfigByWorkstation(ws);
-
-        Data.activeConfig = config;
+        for (Config config: App.data.configList) {
+            if (config.getWorkstation().equals(ws)
+                && config.getHostname().equals(host)) {
+                App.data.activeConfig = config;
+            }
+        }
 
         // Always refresh server values after a login.
-        Data.loadServerValues();
+        App.data.loadServerData();
 
         App.setRoot("primary");
     }
