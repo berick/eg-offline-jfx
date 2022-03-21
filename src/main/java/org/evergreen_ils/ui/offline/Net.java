@@ -45,17 +45,16 @@ public class Net {
             .timeout(Duration.ofSeconds(REQUEST_TIMEOUT))
             .build();
 
-        HttpResponse response;
-
         try {
-            response = client.send(request, BodyHandlers.ofString());
+
+            HttpResponse response = client.send(request, BodyHandlers.ofString());
+            return (String) response.body();
+
         } catch (Exception e) {
             isOnline = false;
             logger.info("Cannot load URL: " + url + " " + e);
             return null;
         }
-
-        return (String) response.body();
     }
 
     /**

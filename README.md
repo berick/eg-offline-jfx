@@ -36,3 +36,22 @@ https://medium.com/expedia-group-tech/how-to-import-public-certificates-into-jav
 # password defaults to 'changeit'
 keytool -keystore /etc/ssl/certs/java/cacerts -import -alias friendly-cert-name -file /path/to/my/cert.cer
 ```
+
+## Development Notes
+
+### Startup Sequence
+
+* load default config from sqlite (host / workstation / org unit)
+* Show login form:
+  * show hostname selector / allow free-text entry
+  * show workstation selector if any are stored
+  * IF NETWORK:
+    * show username, password inputs
+* User submits login
+  * IF NETWORK
+    * Login + refresh data
+    * If no workstation was selected, go to workstation register form
+  * IF NOT NETWORK
+    * Load cached data
+* Proceed to checkout UI
+
