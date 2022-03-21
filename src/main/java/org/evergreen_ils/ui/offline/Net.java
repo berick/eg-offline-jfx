@@ -5,15 +5,20 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URI;
 import java.net.http.HttpClient;
+import java.net.http.HttpClient.Builder;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.net.URLEncoder;
 import java.util.logging.Logger;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+
 
 public class Net {
 
+    static final int CONNECT_TIMEOUT = 60;
+    static final int REQUEST_TIMEOUT = 5;
     static final String OFFLINE_PATH="offline-data";
 
     static final Logger logger =
@@ -29,15 +34,23 @@ public class Net {
 
     String getUrlBody(String url) {
 
-        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
+        // Create a new client with each url lookup so we can leverage
+        // the shorter connect timeout to see if we are in fact online.
+        HttpClient client = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(CONNECT_TIMEOUT))
+            .build();
 
-        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(url))
+            .timeout(Duration.ofSeconds(REQUEST_TIMEOUT))
+            .build();
 
         HttpResponse response;
 
         try {
             response = client.send(request, BodyHandlers.ofString());
         } catch (Exception e) {
+            isOnline = false;
             logger.info("Cannot load URL: " + url + " " + e);
             return null;
         }
@@ -47,7 +60,6 @@ public class Net {
 
     /**
      * Returns true if we can successfully ping the EG server.
-     * TODO add a timeout
      */
     boolean canConnect(String hostname) {
 
