@@ -35,9 +35,6 @@ public class LoginController {
 
     @FXML private void login() throws java.io.IOException {
 
-        App.data.username = usernameInput.getText();
-        App.data.password = passwordInput.getText();
-        
         String ws = workstationSelect.getValue();
         String host = hostnameSelect.getValue();
 
@@ -47,6 +44,10 @@ public class LoginController {
                 App.data.activeConfig = config;
             }
         }
+
+        // These are only tracked in memory
+        App.data.activeConfig.setUsername(usernameInput.getText());
+        App.data.activeConfig.setPassword(passwordInput.getText());
 
         // Always refresh server values after a login.
         App.data.loadServerData();

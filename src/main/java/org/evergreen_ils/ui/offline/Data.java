@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.function.Consumer;
+import java.util.Arrays;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 
@@ -39,15 +40,10 @@ public class Data {
 
     ArrayList<NonCatType> nonCatTypes = new ArrayList<NonCatType>();
 
-    // These are kept in memory for the duration of the running process
-    // so we can refresh the offline data and upload transactions
-    // in the background w/o prompting for a login.
-    String username;
-    String password;
-    String authtoken;
-
     // Points to our offline DB schema definition file.
     URL schemaUrl;
+
+    JSONObject orgUnits;
 
     Config activeConfig;
     List<Config> configList = new ArrayList<Config>();
@@ -60,6 +56,17 @@ public class Data {
 
     // All pending (non-exported) transactions in our offline database
     ObservableList<Transaction> pendingXactsList;
+
+    // TODO: Cleaning code copied from Hatch.  Use in a shared spot?
+    // routine for scrubbing invalid chars from file names / paths
+    // http://stackoverflow.com/questions/1155107/is-there-a-cross-platform-java-method-to-remove-filename-special-chars
+    final static int[] illegalChars = {
+        34, 60, 62, 124, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+        15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+        58, 42, 63, 92, 47
+    };
+
+    static { Arrays.sort(illegalChars); }
 
     /**
      * Connect to the offline database
@@ -155,6 +162,7 @@ public class Data {
             Config config = new Config();
             config.setHostname(set.getString("hostname"));
             config.setWorkstation(set.getString("workstation"));
+            config.setOrgUnit(set.getInt("org_unit"));
             config.setIsDefault(set.getInt("is_default") == 1);
 
             if (config.getIsDefault()) {
@@ -242,46 +250,69 @@ public class Data {
         return URLEncoder.encode(v, StandardCharsets.UTF_8.toString());
     }
 
+    public static String cleanFileName(String badFileName) {
+        char lastChar = 0;
+        StringBuilder cleanName = new StringBuilder();
+        for (int i = 0; i < badFileName.length(); i++) {
+            int c = (int)badFileName.charAt(i);
+            if (Arrays.binarySearch(illegalChars, c) < 0) {
+                cleanName.append((char)c);
+                lastChar = (char) c;
+            } else {
+                // avoid dupe-ing the placeholder chars, since that
+                // relays no useful information (apart from the number
+                // of illegal characters)
+                // This is usefuf or things like https:// with dupe "/" chars
+                if (lastChar != '_')
+                    cleanName.append('_');
+                lastChar = '_';
+            }
+        }
+        return cleanName.toString();
+    }
+    // --------------------------------------------------
+
+
+    /**
+     * Returns the path to the data directory as a String
+     */
+    String createDataDir() {
+
+        String hostname = Data.cleanFileName(activeConfig.getHostname());
+
+        String dirPath = String.format("data/%s/%d",
+            Data.cleanFileName(activeConfig.getHostname()),
+            activeConfig.getOrgUnit());
+
+        // This will not ovewrite existing files.
+        new File(dirPath).mkdirs();
+
+        return dirPath;
+    }
+
+    void loadOrgUnits() {
+
+        // Try to pull from the network if possible.
+
+    }
+
     void loadServerData() {
+
+        String dataPath = createDataDir();
+
+        if (activeConfig == null) { return; }
+
+        // TODO if not connected, we need to know what org unit
+        // is linked to the selected workstatation so we can
+        // load the correct offline file.
 
         if (!App.net.canConnect(activeConfig.getHostname())) {
             readOfflineDataFile();
             return;
         }
 
-        if (activeConfig == null) { return; }
-
-        String url = "";
-
-        try {
-
-            url = String.format(
-                "https://%s/offline-data?workstation=%s&username=%s&password=%s",
-                encode(activeConfig.getHostname()),
-                encode(activeConfig.getWorkstation()),
-                encode(username),
-                encode(password)
-            );
-
-        } catch (UnsupportedEncodingException e) {
-
-            logger.severe("Cannot create server URL: " + url);
-            e.printStackTrace();
-            return;
-        }
-
-        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
-
-        HttpClient client = HttpClient.newHttpClient();
-
-        client.sendAsync(request, BodyHandlers.ofString())
-            .thenApply(HttpResponse::body)
-            .thenAccept(new Consumer<String>() {
-                public void accept(String body) {
-                    absorbOfflineData(body);
-                }
-            })
-            .join();
+        String body = App.net.getServerData(activeConfig);
+        absorbOfflineData(body);
     }
 
     void readOfflineDataFile() {
@@ -308,7 +339,7 @@ public class Data {
     void absorbOfflineData(String data) {
 
         try {
-            BufferedWriter writer = 
+            BufferedWriter writer =
                 new BufferedWriter(new FileWriter(OFFLINE_DATA_FILE));
             writer.write(data);
             writer.close();

@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS xact (
 CREATE TABLE IF NOT EXISTS config (
     is_default INT DEFAULT 0,
     hostname TEXT,
-    workstation TEXT
+    workstation TEXT,
+    org_unit INT
 );
 
