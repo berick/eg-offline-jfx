@@ -45,6 +45,11 @@ public class LoginController {
             }
         }
 
+        if (App.data.activeConfig == null) {
+            // User failed to select needed values.
+            return;
+        }
+
         // These are only tracked in memory
         App.data.activeConfig.setUsername(usernameInput.getText());
         App.data.activeConfig.setPassword(passwordInput.getText());

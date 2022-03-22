@@ -42,9 +42,10 @@ keytool -keystore /etc/ssl/certs/java/cacerts -import -alias friendly-cert-name 
 ### Startup Sequence
 
 * load default config from sqlite (host / workstation / org unit)
+* Show host select option / allow free text
+* Check network connectivity / display in status bar
 * Show login form:
-  * show hostname selector / allow free-text entry
-  * show workstation selector if any are stored
+  * show workstation selector if any are stored (based on selected host)
   * IF NETWORK:
     * show username, password inputs
 * User submits login
