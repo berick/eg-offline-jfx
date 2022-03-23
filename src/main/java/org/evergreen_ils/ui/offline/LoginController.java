@@ -1,42 +1,33 @@
 package org.evergreen_ils.ui.offline;
 
-import java.io.IOException;
-import java.util.logging.Logger;
-import java.util.List;
-
-import java.sql.SQLException;
-
-import javafx.fxml.FXML;
-import javafx.stage.Stage;
-import javafx.event.ActionEvent;
 import javafx.application.Platform;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.PasswordField;
+import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 
 
 public class LoginController {
 
-    static final Logger logger =
-        Logger.getLogger(App.class.getPackage().getName());
-
     @FXML TextField usernameInput;
     @FXML PasswordField passwordInput;
-    @FXML ChoiceBox<String> hostnameSelect;
     @FXML ChoiceBox<String> workstationSelect;
+    @FXML Text startupHost;
 
     @FXML private void initialize() {
         for (Config config: App.data.configList) {
             workstationSelect.getItems().add(config.getWorkstation());
-            hostnameSelect.getItems().add(config.getHostname());
         }
+        startupHost.setText(App.data.startupHost);
     }
 
     @FXML private void login() throws java.io.IOException {
 
         String ws = workstationSelect.getValue();
-        String host = hostnameSelect.getValue();
+        String host = App.data.startupHost;
+
+        App.logger.info("Launching login form with isOnline = " + App.net.isOnline);
 
         for (Config config: App.data.configList) {
             if (config.getWorkstation().equals(ws)
@@ -63,5 +54,4 @@ public class LoginController {
     @FXML private void exit() {
         Platform.exit();
     }
-
 }

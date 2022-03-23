@@ -1,17 +1,15 @@
 package org.evergreen_ils.ui.offline;
 
+import java.io.IOException;
+import java.util.logging.Logger;
+
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
 import javafx.scene.control.Alert;
-import javafx.application.Platform;
-
-import java.io.IOException;
-import java.util.logging.*;
-import java.util.logging.Logger;
-import java.net.URL;
+import javafx.stage.Stage;
 
 /**
  * JavaFX App
@@ -57,7 +55,7 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
 
-        setRoot("login");
+        setRoot("host");
     }
 
     static void setRoot(String fxml) throws IOException {

@@ -1,8 +1,9 @@
 package org.evergreen_ils.ui.offline;
 
-import javafx.beans.property.StringProperty;
+import org.json.JSONObject;
+
 import javafx.beans.property.SimpleStringProperty;
-import org.json.*;
+import javafx.beans.property.StringProperty;
 
 public class Transaction {
 

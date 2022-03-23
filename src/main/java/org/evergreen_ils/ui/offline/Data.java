@@ -1,33 +1,32 @@
 package org.evergreen_ils.ui.offline;
 
-import org.json.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.function.Consumer;
-import java.util.Arrays;
-import javafx.collections.ObservableList;
-import javafx.collections.FXCollections;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.ResultSet;
-import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Logger;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class Data {
 
@@ -44,6 +43,9 @@ public class Data {
     URL schemaUrl;
 
     JSONObject orgUnits;
+
+    // Host chosen in the initial host select page.
+    String startupHost;
 
     Config activeConfig;
     List<Config> configList = new ArrayList<Config>();
@@ -298,9 +300,9 @@ public class Data {
 
     void loadServerData() {
 
-        String dataPath = createDataDir();
-
         if (activeConfig == null) { return; }
+
+        String dataPath = createDataDir();
 
         // TODO if not connected, we need to know what org unit
         // is linked to the selected workstatation so we can
@@ -349,7 +351,16 @@ public class Data {
             return;
         }
 
-        JSONObject obj = new JSONObject(data);
+        App.logger.info("Offline Data: \n" + data);
+
+        JSONObject obj;
+
+        try {
+            obj = new JSONObject(data);
+        } catch (org.json.JSONException e) {
+            App.logger.severe("Cannot parse offline data file as JSON: " + e + "\n" + data);
+            throw e;
+        }
 
         JSONArray ncTypes = obj.getJSONArray("cnct");
 

@@ -2,15 +2,14 @@ package org.evergreen_ils.ui.offline;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import javafx.fxml.FXML;
-import javafx.stage.Stage;
-import javafx.event.ActionEvent;
-import javafx.application.Platform;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.CheckBox;
 import java.util.logging.Logger;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 public class TransactionsController {
 

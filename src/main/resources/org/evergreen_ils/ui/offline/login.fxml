@@ -31,7 +31,6 @@
          <children>
             <TextField fx:id="usernameInput" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             <PasswordField fx:id="passwordInput" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-            <ChoiceBox fx:id="hostnameSelect" prefHeight="26.0" prefWidth="227.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
             <ChoiceBox fx:id="workstationSelect" prefHeight="24.0" prefWidth="227.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Hostname" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                <GridPane.margin>
@@ -59,6 +58,7 @@
                   <Insets left="70.0" />
                </GridPane.margin>
             </Button>
+            <Text fx:id="startupHost" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
          </children>
       </GridPane>
    </children>
