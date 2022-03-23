@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 
@@ -14,10 +15,13 @@ public class LoginController {
     @FXML PasswordField passwordInput;
     @FXML ChoiceBox<String> workstationSelect;
     @FXML Text startupHost;
+    @FXML VBox mainVbox;
 
     @FXML private void initialize() {
 
         App.logger.fine("Launching login form with isOnline = " + App.net.isOnline);
+
+        App.applyOnlineBorder(mainVbox);
 
         for (Config config: App.data.configList) {
             workstationSelect.getItems().add(config.getWorkstation());

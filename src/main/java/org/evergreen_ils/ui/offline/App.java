@@ -9,6 +9,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /**
@@ -24,6 +31,22 @@ public class App extends Application {
 
     static final Logger logger =
         Logger.getLogger(App.class.getPackage().getName());
+
+    static void applyOnlineBorder(Region region) {
+        BorderStroke stroke;
+        if (App.net.isOnline) {
+            stroke = new BorderStroke(
+                Color.GREEN, BorderStrokeStyle.SOLID, 
+                CornerRadii.EMPTY, new BorderWidths(5));
+        } else {
+            stroke = new BorderStroke(
+                Color.YELLOW, BorderStrokeStyle.SOLID, 
+                CornerRadii.EMPTY, new BorderWidths(5));
+        }
+
+        Border border = new Border(stroke);
+        region.setBorder(border);  
+    }
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -53,6 +76,7 @@ public class App extends Application {
             .getResource("offline.css").toExternalForm());
 
         stage.setScene(scene);
+        stage.setTitle("Evergreen Offline Interface"); // TODO i18n?
         stage.show();
 
         setRoot("host");

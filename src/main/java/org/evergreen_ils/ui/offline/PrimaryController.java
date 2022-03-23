@@ -1,17 +1,13 @@
 package org.evergreen_ils.ui.offline;
 
-import java.io.IOException;
-import java.util.logging.Logger;
 import java.util.List;
+import java.util.logging.Logger;
 
-import java.sql.SQLException;
-
-import javafx.fxml.FXML;
-import javafx.stage.Stage;
-import javafx.event.ActionEvent;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.control.TabPane;
-
+import javafx.scene.layout.VBox;
 
 public class PrimaryController {
 
@@ -19,9 +15,11 @@ public class PrimaryController {
         Logger.getLogger(App.class.getPackage().getName());
 
     @FXML TabPane tabs;
+    @FXML VBox mainVbox;
 
     @FXML private void initialize() throws java.sql.SQLException {
 
+        App.applyOnlineBorder(mainVbox);
 
         List<Config> configs = App.data.getConfigOptions();
 

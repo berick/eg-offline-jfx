@@ -317,7 +317,21 @@ public class Data {
             return;
         }
 
-        absorbOfflineData(dataPath, body);
+        writeOfflineDataFile(dataPath, body);
+        absorbOfflineData(body);
+    }
+
+    private void writeOfflineDataFile(String path, String data) {
+        try {
+            BufferedWriter writer =
+                new BufferedWriter(new FileWriter(path + "/" + OFFLINE_DATA_FILE));
+            writer.write(data);
+            writer.close();
+        } catch (IOException e) {
+            logger.severe("Cannot write data file: " + path + "/" + OFFLINE_DATA_FILE + ": " + e);
+            e.printStackTrace();
+            return;
+        }
     }
 
     void readOfflineDataFile(String path) {
@@ -348,18 +362,7 @@ public class Data {
         absorbOfflineData(json);
     }
 
-    void absorbOfflineData(String path, String data) {
-
-        try {
-            BufferedWriter writer =
-                new BufferedWriter(new FileWriter(path + "/" + OFFLINE_DATA_FILE));
-            writer.write(data);
-            writer.close();
-        } catch (IOException e) {
-            logger.severe("Cannot write data file: " + path + "/" + OFFLINE_DATA_FILE + ": " + e);
-            e.printStackTrace();
-            return;
-        }
+    void absorbOfflineData(String data) {
 
         App.logger.info("Offline Data: \n" + data);
 

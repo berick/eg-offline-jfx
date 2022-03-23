@@ -9,7 +9,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="772.0" prefWidth="768.0" spacing="20.0" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.evergreen_ils.ui.offline.PrimaryController">
+<VBox prefHeight="772.0" prefWidth="768.0" spacing="20.0" xmlns="http://javafx.com/javafx/11" 
+  fx:id="mainVbox" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.evergreen_ils.ui.offline.PrimaryController">
    <children>
       <MenuBar>
         <menus>
