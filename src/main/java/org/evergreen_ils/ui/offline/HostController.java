@@ -4,10 +4,10 @@ import java.io.IOException;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 
 public class HostController {
-    @FXML ChoiceBox<String> hostnameSelect;
+    @FXML ComboBox<String> hostnameSelect;
 
     @FXML private void initialize() {
         for (Config config: App.data.configList) {
@@ -17,6 +17,8 @@ public class HostController {
 
     @FXML void setHost(ActionEvent action) throws IOException {
         App.data.startupHost = hostnameSelect.getValue();
+
+        App.logger.info("User entered hostname value of " + App.data.startupHost);
          
         if (!App.net.canConnect(App.data.startupHost)) {
             App.logger.info("Cannot connect to network.  Going offline");
