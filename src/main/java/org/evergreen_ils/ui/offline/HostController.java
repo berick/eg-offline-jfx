@@ -12,6 +12,9 @@ public class HostController {
     @FXML private void initialize() {
         for (Config config: App.data.configList) {
             hostnameSelect.getItems().add(config.getHostname());
+            if (config.getIsDefault()) {
+                hostnameSelect.setValue(config.getHostname());
+            }
         }
     }
 

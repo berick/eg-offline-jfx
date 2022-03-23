@@ -306,7 +306,7 @@ public class Data {
         // load the correct offline file.
 
         if (!App.net.isOnline) {
-            readOfflineDataFile();
+            readOfflineDataFile(dataPath);
             return;
         }
 
@@ -317,16 +317,16 @@ public class Data {
             return;
         }
 
-        absorbOfflineData(body);
+        absorbOfflineData(dataPath, body);
     }
 
-    void readOfflineDataFile() {
+    void readOfflineDataFile(String path) {
 
         BufferedReader reader;
         String json = "";
 
         try {
-            reader = new BufferedReader(new FileReader(OFFLINE_DATA_FILE));
+            reader = new BufferedReader(new FileReader(path + "/" + OFFLINE_DATA_FILE));
 
             String line;
             while ( (line = reader.readLine()) != null) {
@@ -348,15 +348,15 @@ public class Data {
         absorbOfflineData(json);
     }
 
-    void absorbOfflineData(String data) {
+    void absorbOfflineData(String path, String data) {
 
         try {
             BufferedWriter writer =
-                new BufferedWriter(new FileWriter(OFFLINE_DATA_FILE));
+                new BufferedWriter(new FileWriter(path + "/" + OFFLINE_DATA_FILE));
             writer.write(data);
             writer.close();
         } catch (IOException e) {
-            logger.severe("Cannot write data file " + OFFLINE_DATA_FILE);
+            logger.severe("Cannot write data file: " + path + "/" + OFFLINE_DATA_FILE + ": " + e);
             e.printStackTrace();
             return;
         }
