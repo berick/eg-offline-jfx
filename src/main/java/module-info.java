@@ -1,6 +1,6 @@
 module org.evergreen_ils.ui.offline {
     requires java.net.http;
-    requires javafx.controls;
+    requires transitive javafx.controls;
     requires javafx.fxml;
     requires java.sql;
     requires org.json;

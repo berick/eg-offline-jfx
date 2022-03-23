@@ -1,18 +1,15 @@
 package org.evergreen_ils.ui.offline;
 
-import java.io.*;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
-import java.net.http.HttpClient.Builder;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-import java.net.URLEncoder;
-import java.util.logging.Logger;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.logging.Logger;
 
 
 public class Net {
@@ -47,7 +44,17 @@ public class Net {
 
         try {
 
-            HttpResponse response = client.send(request, BodyHandlers.ofString());
+            HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+
+            int code = response.statusCode();
+
+            App.logger.fine("HTTP request returned code = " + code);
+
+            if (code != 200) {
+                App.logger.severe("Error fetching resource: status=" + code + " : " + request);
+                return null;
+            }
+
             return (String) response.body();
 
         } catch (Exception e) {

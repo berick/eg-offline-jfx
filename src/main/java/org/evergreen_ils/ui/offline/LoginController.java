@@ -16,10 +16,19 @@ public class LoginController {
     @FXML Text startupHost;
 
     @FXML private void initialize() {
+
+        App.logger.fine("Launching login form with isOnline = " + App.net.isOnline);
+
         for (Config config: App.data.configList) {
             workstationSelect.getItems().add(config.getWorkstation());
         }
         startupHost.setText(App.data.startupHost);
+
+        if (!App.net.isOnline) {
+            // We cannot login if we are offline, so avoid prompting for unneeded values.
+            usernameInput.setDisable(true);
+            passwordInput.setDisable(true);
+        }
     }
 
     @FXML private void login() throws java.io.IOException {
@@ -27,7 +36,15 @@ public class LoginController {
         String ws = workstationSelect.getValue();
         String host = App.data.startupHost;
 
-        App.logger.info("Launching login form with isOnline = " + App.net.isOnline);
+        if (ws == null) {
+            if (App.net.isOnline) {
+                // TODO launch workstation registration page.
+            } else {
+                App.logger.severe(
+                    "We have no workstation or network access to register one");
+                return;
+            }
+        }
 
         for (Config config: App.data.configList) {
             if (config.getWorkstation().equals(ws)
@@ -36,12 +53,8 @@ public class LoginController {
             }
         }
 
-        if (App.data.activeConfig == null) {
-            // User failed to select needed values.
-            return;
-        }
-
         // These are only tracked in memory
+        // Will be null if there's no network.
         App.data.activeConfig.setUsername(usernameInput.getText());
         App.data.activeConfig.setPassword(passwordInput.getText());
 

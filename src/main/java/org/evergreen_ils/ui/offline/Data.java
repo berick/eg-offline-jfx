@@ -100,7 +100,6 @@ public class Data {
         // statement separator and feed them.
         // TODO: break these into per-table files?
         // https://stackoverflow.com/questions/2071682/how-to-execute-sql-script-file-in-java
-        String[] inserts = sql.split(";");
 
         for (String insert: sql.split(";")) {
             insert = insert.trim();
@@ -280,8 +279,6 @@ public class Data {
      */
     String createDataDir() {
 
-        String hostname = Data.cleanFileName(activeConfig.getHostname());
-
         String dirPath = String.format("data/%s/%d",
             Data.cleanFileName(activeConfig.getHostname()),
             activeConfig.getOrgUnit());
@@ -308,12 +305,18 @@ public class Data {
         // is linked to the selected workstatation so we can
         // load the correct offline file.
 
-        if (!App.net.canConnect(activeConfig.getHostname())) {
+        if (!App.net.isOnline) {
             readOfflineDataFile();
             return;
         }
 
         String body = App.net.getServerData(activeConfig);
+
+        if (body == null || "".equals(body)) {
+            App.logger.severe("Server data lookup returned an empty object");
+            return;
+        }
+
         absorbOfflineData(body);
     }
 
@@ -330,8 +333,15 @@ public class Data {
                 json += line;
             }
 
+            reader.close();
+
         } catch (Exception e) {
             logger.info("No offline data file to read: " + e);
+            return;
+        }
+
+        if ("".equals(json)) {
+            App.logger.fine("No offline data to read");
             return;
         }
 
