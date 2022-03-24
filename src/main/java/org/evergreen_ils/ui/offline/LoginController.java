@@ -42,18 +42,22 @@ public class LoginController {
 
         if (ws == null) {
             if (App.net.isOnline) {
-                // TODO launch workstation registration page.
+                // Temp config until we have a workstation.
+                App.data.activeConfig = new Config();
+                App.data.activeConfig.setHostname(host);
             } else {
                 App.logger.severe(
                     "We have no workstation or network access to register one");
                 return;
             }
-        }
+       
+        } else {
 
-        for (Config config: App.data.configList) {
-            if (config.getWorkstation().equals(ws)
-                && config.getHostname().equals(host)) {
-                App.data.activeConfig = config;
+            for (Config config: App.data.configList) {
+                if (config.getWorkstation().equals(ws)
+                    && config.getHostname().equals(host)) {
+                    App.data.activeConfig = config;
+                }
             }
         }
 
@@ -62,10 +66,15 @@ public class LoginController {
         App.data.activeConfig.setUsername(usernameInput.getText());
         App.data.activeConfig.setPassword(passwordInput.getText());
 
-        // Always refresh server values after a login.
-        App.data.loadServerData();
+ 
 
-        App.setRoot("primary");
+        if (ws == null) {
+            App.setRoot("workstations");
+        } else {
+            // Always refresh server values after a login.
+            App.data.loadServerData();
+            App.setRoot("primary"); 
+        }
     }
 
     @FXML private void exit() {

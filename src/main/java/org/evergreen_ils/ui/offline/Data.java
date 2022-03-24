@@ -36,6 +36,7 @@ public class Data {
     final static String OFFLINE_DB_URL = "jdbc:sqlite:offline.db";
     final static String OFFLINE_EXPORT = "offline-export.txt";
     final static String OFFLINE_DATA_FILE = "offline-data.json";
+    final static String ORG_UNITS_FILE = "org-units.json";
 
     ArrayList<NonCatType> nonCatTypes = new ArrayList<NonCatType>();
 
@@ -273,33 +274,83 @@ public class Data {
     }
     // --------------------------------------------------
 
-
-    /**
-     * Returns the path to the data directory as a String
-     */
-    String createDataDir() {
-
-        String dirPath = String.format("data/%s/%d",
-            Data.cleanFileName(activeConfig.getHostname()),
-            activeConfig.getOrgUnit());
-
-        // This will not ovewrite existing files.
+    String getHostDataDir() {
+        String dirPath = String.format(
+            "data/%s", Data.cleanFileName(activeConfig.getHostname()));
+        
+        // Creates the directory when needed.
         new File(dirPath).mkdirs();
 
         return dirPath;
     }
 
-    void loadOrgUnits() {
+    /**
+     * Returns the path to the data directory as a String
+     */
+    String getOrgDataDir() {
 
-        // Try to pull from the network if possible.
+        String path = String.format(
+            "%s/%s", getHostDataDir(), activeConfig.getOrgUnit());
+        
+        new File(path).mkdirs();
 
+        return path;
+    }
+
+
+
+    void loadOrgUnits() throws IOException {
+
+        String path = getHostDataDir();
+        String fileLocation = path + "/" + ORG_UNITS_FILE;
+        
+        if (App.net.isOnline) {
+            // If we're online, load from network and store.
+            String data = App.net.getOrgUnits(activeConfig);
+
+            try {
+                BufferedWriter writer =
+                    new BufferedWriter(new FileWriter(fileLocation));
+                writer.write(data);
+                writer.close();
+            } catch (IOException e) {
+                logger.severe("Cannot write data file: " + fileLocation + ": " + e);
+                e.printStackTrace();
+                throw e;
+            }
+        }
+
+        String data = "";
+
+        try {
+            BufferedReader reader = 
+                new BufferedReader(new FileReader(fileLocation));
+
+            String line;
+            while ( (line = reader.readLine()) != null) {
+                data += line;
+            }
+
+            reader.close();
+        } catch (IOException e) {
+            App.logger.severe("Org unit file not found!");
+            throw e;
+        }
+
+        App.logger.info("Building org tree...");
+        
+        JSONObject rootOrg = new JSONObject(data);
+
+        OrgUnit.buildOrgTree(rootOrg);
+
+        App.logger.info("Built org unit tree with root " + OrgUnit.orgTree.name);
     }
 
     void loadServerData() {
 
         if (activeConfig == null) { return; }
 
-        String dataPath = createDataDir();
+        String dataPath = getOrgDataDir();
 
         // TODO if not connected, we need to know what org unit
         // is linked to the selected workstatation so we can
@@ -390,12 +441,6 @@ public class Data {
             );
         }
 
-        App.logger.info("Building org tree...");
-
-        JSONObject rootOrg = obj.getJSONArray("aou").getJSONObject(0);
-        OrgUnit.buildOrgTree(rootOrg);
-
-        App.logger.info("Built org unit tree with root " + OrgUnit.orgTree.name);
     }
 }
 

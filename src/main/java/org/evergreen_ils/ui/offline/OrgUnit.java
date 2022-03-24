@@ -31,6 +31,15 @@ public class OrgUnit {
         label = padding + name + " (" + shortname + ")";
     }
 
+    public int toValue() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return label;
+    }
+
     static OrgUnit buildOrgTree(JSONObject jsonOrg) {
         OrgUnit org = new OrgUnit(jsonOrg);
         org.children = new ArrayList<OrgUnit>();

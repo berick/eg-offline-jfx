@@ -27,6 +27,8 @@ public class HostController {
             App.logger.info("Cannot connect to network.  Going offline");
         }
 
+        App.data.loadOrgUnits();
+
         App.setRoot("login");
     }
 }

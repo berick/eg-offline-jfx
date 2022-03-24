@@ -31,6 +31,8 @@ public class Net {
 
     String getUrlBody(String url) {
 
+        App.logger.info("Getting URL: " + url);
+
         // Create a new client with each url lookup so we can leverage
         // the shorter connect timeout to see if we are in fact online.
         HttpClient client = HttpClient.newBuilder()
