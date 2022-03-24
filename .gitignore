@@ -4,7 +4,7 @@
 *.db
 
 offline-export.txt
-offline-data.json
+data
 
 # vim
 *.swp

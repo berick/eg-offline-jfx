@@ -389,6 +389,13 @@ public class Data {
                 )
             );
         }
+
+        App.logger.info("Building org tree...");
+
+        JSONObject rootOrg = obj.getJSONArray("aou").getJSONObject(0);
+        OrgUnit.buildOrgTree(rootOrg);
+
+        App.logger.info("Built org unit tree with root " + OrgUnit.orgTree.name);
     }
 }
 
