@@ -25,7 +25,16 @@ public class WorkstationController {
         }
     }
 
-    // TODO set default config from registered workstation
-    //App.data.loadServerData();
-    //App.setRoot("primary"); 
+    @FXML void registerWorkstation() throws java.io.IOException {
+        if (orgSelect.getValue() == null) { return; }
+
+        App.net.registerWorkstation(
+            App.data.activeConfig,
+            orgSelect.getValue().id, 
+            workstationInput.getText()
+        );
+
+        App.data.setDefaultConfig();
+        App.setRoot("login"); 
+    }
 }

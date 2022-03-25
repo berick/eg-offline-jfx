@@ -9,6 +9,10 @@ public class Config {
     String authtoken;   // in-memory only
     int orgUnit;
 
+    public Config(String hostname) {
+        this.hostname = hostname;
+    }
+
     void setHostname(String h) {
         hostname = h;
     }

@@ -19,11 +19,12 @@ public class HostController {
     }
 
     @FXML void setHost(ActionEvent action) throws IOException {
-        App.data.startupHost = hostnameSelect.getValue();
+        String host = hostnameSelect.getValue();
+        App.data.activeConfig = new Config(host);
 
-        App.logger.info("User entered hostname value of " + App.data.startupHost);
+        App.logger.info("User entered hostname value of " + host);
          
-        if (!App.net.canConnect(App.data.startupHost)) {
+        if (!App.net.canConnect(host)) {
             App.logger.info("Cannot connect to network.  Going offline");
         }
 

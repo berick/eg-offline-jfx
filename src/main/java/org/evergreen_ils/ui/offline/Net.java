@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.logging.Logger;
 
+import org.json.JSONObject;
 
 public class Net {
 
@@ -84,6 +85,26 @@ public class Net {
         String url = String.format(
            "https://%s/%s?org_units=1", config.getHostname(), OFFLINE_PATH);
         return getUrlBody(url);
+    }
+
+    // Updates the provided config with workstation name and org unit
+    // on success.
+    void registerWorkstation(Config config, int orgId, String name) {
+
+        String url = String.format(
+           "https://%s/%s?register_workstation=%s&org_unit=%d", 
+           config.getHostname(), OFFLINE_PATH, name, orgId);
+
+        String body = getUrlBody(url);
+
+        JSONObject ws = new JSONObject(body);
+        if (ws.has("name")) {
+            config.setWorkstation(ws.getString("name"));
+            config.setOrgUnit(orgId);
+        } else {
+            // TODO report dupes to the user so they can try again.
+            App.logger.severe("Failed to register workstation: " + name);
+        }
     }
 
     String getServerData(Config config) {

@@ -26,7 +26,13 @@ public class LoginController {
         for (Config config: App.data.configList) {
             workstationSelect.getItems().add(config.getWorkstation());
         }
-        startupHost.setText(App.data.startupHost);
+
+        startupHost.setText(App.data.activeConfig.getHostname());
+
+        String ws = App.data.activeConfig.getWorkstation();
+        if (ws != null) {
+            workstationSelect.setValue(ws);
+        }
 
         if (!App.net.isOnline) {
             // We cannot login if we are offline, so avoid prompting for unneeded values.
@@ -38,13 +44,12 @@ public class LoginController {
     @FXML private void login() throws java.io.IOException {
 
         String ws = workstationSelect.getValue();
-        String host = App.data.startupHost;
+        String host = App.data.activeConfig.getHostname();
 
         if (ws == null) {
             if (App.net.isOnline) {
                 // Temp config until we have a workstation.
-                App.data.activeConfig = new Config();
-                App.data.activeConfig.setHostname(host);
+                App.data.activeConfig = new Config(host);
             } else {
                 App.logger.severe(
                     "We have no workstation or network access to register one");
@@ -65,8 +70,6 @@ public class LoginController {
         // Will be null if there's no network.
         App.data.activeConfig.setUsername(usernameInput.getText());
         App.data.activeConfig.setPassword(passwordInput.getText());
-
- 
 
         if (ws == null) {
             App.setRoot("workstations");

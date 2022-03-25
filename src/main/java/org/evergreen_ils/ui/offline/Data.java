@@ -45,9 +45,6 @@ public class Data {
 
     JSONObject orgUnits;
 
-    // Host chosen in the initial host select page.
-    String startupHost;
-
     Config activeConfig;
     List<Config> configList = new ArrayList<Config>();
 
@@ -161,8 +158,7 @@ public class Data {
         ResultSet set = stmt.executeQuery();
 
         while (set.next()) {
-            Config config = new Config();
-            config.setHostname(set.getString("hostname"));
+            Config config = new Config(set.getString("hostname"));
             config.setWorkstation(set.getString("workstation"));
             config.setOrgUnit(set.getInt("org_unit"));
             config.setIsDefault(set.getInt("is_default") == 1);
@@ -308,15 +304,22 @@ public class Data {
             // If we're online, load from network and store.
             String data = App.net.getOrgUnits(activeConfig);
 
-            try {
-                BufferedWriter writer =
-                    new BufferedWriter(new FileWriter(fileLocation));
-                writer.write(data);
-                writer.close();
-            } catch (IOException e) {
-                logger.severe("Cannot write data file: " + fileLocation + ": " + e);
-                e.printStackTrace();
-                throw e;
+            if (data == null) {
+                logger.info("Failed to fetch offline data");
+                App.net.isOnline = false;
+
+            } else {
+
+                try {
+                    BufferedWriter writer =
+                        new BufferedWriter(new FileWriter(fileLocation));
+                    writer.write(data);
+                    writer.close();
+                } catch (IOException e) {
+                    logger.severe("Cannot write data file: " + fileLocation + ": " + e);
+                    e.printStackTrace();
+                    throw e;
+                }
             }
         }
 
@@ -441,6 +444,16 @@ public class Data {
             );
         }
 
+    }
+
+    // Set the currently active config as the default.
+    void setDefaultConfig() {
+        // TODO the actual sql bits
+        for (Config conf: configList) {
+            conf.setIsDefault(false);
+        }
+
+        activeConfig.setIsDefault(true);
     }
 }
 
