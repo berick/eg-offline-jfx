@@ -39,11 +39,23 @@ keytool -keystore /etc/ssl/certs/java/cacerts -import -alias friendly-cert-name 
 
 ## Development Notes
 
+### TODO
+
+* string bundles
+* shared base page
+* all async net
+* Context class for shared data
+* baked in progress indicator along bottom 
+* show progress during network connectivity check.
+* add skip option to network check
+* common exception type
+
 ### Startup Sequence
 
 * load default config from sqlite (host / workstation / org unit)
 * Show host select option / allow free text
-* Check network connectivity / display in status bar
+* Check network connectivity / display in status
+* Fetch org unit tree
 * Show login form:
   * show workstation selector if any are stored (based on selected host)
   * IF NETWORK:
