@@ -44,9 +44,13 @@ public class App extends Application {
     
         try {
 
+            logger.info("Loading string bundle for locale " + Locale.getDefault());
+
             URL localeDir = App.getResource("locale");
             String path = localeDir.getFile();
-		    App.strings = ResourceBundle.getBundle(path + "strings");
+		   // App.strings = ResourceBundle.getBundle(path + "strings");
+		    App.strings = ResourceBundle.getBundle(
+                "org.evergreen_ils.ui.offline.strings");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,10 +58,8 @@ public class App extends Application {
 
         if (App.strings == null) {
             App.logger.severe(
-                "Failed to laod string bundle for locale " +
-                Locale.getDefault().getDisplayName()
+                "Failed to laod string bundle for locale " + Locale.getDefault()
             );
-
             Platform.exit();
         }
 
