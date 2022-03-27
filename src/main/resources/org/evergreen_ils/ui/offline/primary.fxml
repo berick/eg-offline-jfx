@@ -11,45 +11,4 @@
 
 <VBox prefHeight="772.0" prefWidth="768.0" spacing="20.0" xmlns="http://javafx.com/javafx/11" 
   fx:id="mainVbox" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.evergreen_ils.ui.offline.PrimaryController">
-   <children>
-      <MenuBar>
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-               <items>
-                  <MenuItem mnemonicParsing="false" text="Refresh Server Data" />
-                  <MenuItem mnemonicParsing="false" onAction="#close" text="Exit" />
-               </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-      <TabPane fx:id="tabs" prefHeight="685.0" prefWidth="734.0" tabClosingPolicy="UNAVAILABLE">
-        <tabs>
-          <Tab text="Checkout">
-            <content>
-              <fx:include source="checkout.fxml" />
-            </content>
-          </Tab>
-          <Tab text="Renew" />
-            <Tab text="In-House Use">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-              </content>
-            </Tab>
-            <Tab text="Checkin">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-              </content>
-            </Tab>
-            <Tab text="Register Patron" />
-            <Tab text="Transactions">
-              <content>
-                <fx:include source="transactions.fxml" />
-              </content>
-            </Tab>
-        </tabs>
-      </TabPane>
-   </children>
-   <padding>
-      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-   </padding>
 </VBox>
