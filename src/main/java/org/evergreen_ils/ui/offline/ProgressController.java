@@ -7,6 +7,8 @@ public class ProgressController {
 
     @FXML ProgressBar progressBar;
 
+    private static Thread timerThread;
+
     @FXML private void initialize() {
         App.progress = this;
     }
@@ -23,8 +25,13 @@ public class ProgressController {
         progressBar.setVisible(false);
     }
 
-    // TODO return the thread so it can be stopped?
-    void showProgressTimer(float seconds) {
+    void stopProgressTimer() {
+        if (ProgressController.timerThread != null) {
+            ProgressController.timerThread.interrupt();
+        }
+    }
+
+    void startProgressTimer(float seconds) {
 
         class Timer implements Runnable {
             public void run() {
@@ -34,6 +41,7 @@ public class ProgressController {
                     try {
                         Thread.sleep(1000);
                     } catch (java.lang.InterruptedException e) {
+                        App.logger.info("Progress thread interrupted.  Exiting");
                         hide();
                         return;
                     }
@@ -46,6 +54,8 @@ public class ProgressController {
         }
 
         show();
-        new Thread(new Timer()).start();
+
+        ProgressController.timerThread = new Thread(new Timer());
+        ProgressController.timerThread.start();
     }
 }

@@ -28,7 +28,15 @@ public class PrimaryController {
     }
 
     @FXML void test() {
-        App.progress.showProgressTimer(10);
+        App.progress.startProgressTimer(10);
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(5000);
+                } catch (Exception e) {}
+                App.progress.stopProgressTimer();
+            }
+        }).start();
     }
 
     void setupStrings() {
