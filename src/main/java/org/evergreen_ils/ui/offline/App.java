@@ -33,6 +33,8 @@ public class App extends Application {
     // Currently active context
     static Context context;
 
+    static Net net;
+
     static Database database;
 
     static URL getResource(String fileName) throws IOException {
@@ -43,6 +45,7 @@ public class App extends Application {
     public void start(Stage stage) {
         App.context = new Context();
         App.database = new Database();
+        App.net = new Net();
         
         // TODO
         App.context.hostname = "localhost";

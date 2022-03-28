@@ -32,9 +32,18 @@ public class HostController {
         if (host == null) { return; }
 
         App.context.hostname = host;
-        // connect to network
-        // Load org units from network OR file
-        // Set login page as root.
+
+        App.net.testConnection(App.context, isOnline -> {
+            if (isOnline) {
+                App.logger.info("We are online");
+
+            } else {
+                App.logger.info("We are NOT online");
+            }
+            // Load org units from network OR file
+            // Set login page as root.
+            return null;
+        });
     }
 }
 
