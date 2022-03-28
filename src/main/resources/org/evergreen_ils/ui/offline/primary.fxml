@@ -16,17 +16,9 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="View">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#showHost" text="Host Selection" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem mnemonicParsing="false" onAction="#showHost" text="Change Host" />
+              <MenuItem mnemonicParsing="false" onAction="#close" text="Close" />
+                  <MenuItem mnemonicParsing="false" onAction="#test" text="Test" />
             </items>
           </Menu>
         </menus>
@@ -45,7 +37,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <ProgressBar prefHeight="20.0" prefWidth="375.0" progress="0.0" GridPane.columnIndex="1" />
+            <ProgressBar fx:id="progressBar" prefHeight="20.0" prefWidth="375.0" progress="0.0" visible="false" GridPane.columnIndex="1" />
          </children>
       </GridPane>
    </children>
