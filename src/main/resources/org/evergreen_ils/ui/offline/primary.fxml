@@ -18,7 +18,7 @@
             <items>
               <MenuItem mnemonicParsing="false" onAction="#showHost" text="Change Host" />
               <MenuItem mnemonicParsing="false" onAction="#close" text="Close" />
-                  <MenuItem mnemonicParsing="false" onAction="#test" text="Test" />
+              <MenuItem mnemonicParsing="false" onAction="#test" text="Test" />
             </items>
           </Menu>
         </menus>
@@ -37,7 +37,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <ProgressBar fx:id="progressBar" prefHeight="20.0" prefWidth="375.0" progress="0.0" visible="false" GridPane.columnIndex="1" />
+            <fx:include source="progress.fxml" GridPane.columnIndex="1" />
          </children>
       </GridPane>
    </children>

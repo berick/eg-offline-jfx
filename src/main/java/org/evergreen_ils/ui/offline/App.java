@@ -1,26 +1,15 @@
 package org.evergreen_ils.ui.offline;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 import java.net.URL;
+import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-
-import java.util.ResourceBundle;
 
 /**
  * JavaFX App
@@ -28,6 +17,8 @@ import java.util.ResourceBundle;
 public class App extends Application {
 
     private static Scene scene;
+
+    static ProgressController progress;
 
     static final Logger logger =
         Logger.getLogger(App.class.getPackage().getName());

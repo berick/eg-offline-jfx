@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ProgressBar?>
+
+<ProgressBar xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+    fx:controller="org.evergreen_ils.ui.offline.ProgressController" 
+    fx:id="progressBar" prefHeight="20.0" prefWidth="375.0" progress="0.0" visible="true"/>
+
+
