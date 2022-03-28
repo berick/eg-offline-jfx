@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tab;
+import javafx.scene.text.Text;
 
 import javafx.scene.layout.VBox;
 
@@ -17,14 +18,24 @@ public class PrimaryController {
     @FXML Tab tab1;
     @FXML Tab tab2;
     @FXML VBox bodyVbox;
+    @FXML Text locationText; // Apply after setting Config
 
     @FXML private void initialize() {
+        App.primaryController = this;
         setupStrings();
         setupData();
+        setBodyContent("host");
+        locationText.setText(App.context.toString());
     }
 
     void setupData() {
-        // connect to db
+        try {
+            App.database.connect();
+            App.database.createDatabase();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Ui.alertAndExit("Could not create offline database");
+        }
     }
 
     @FXML void test() {
@@ -56,8 +67,18 @@ public class PrimaryController {
         }
     }
 
+    /**
+     * Sets the content of the main body of the primary controller to the
+     * provided fxml file name.
+     * @param fxml FXML file name (without '.fxml')
+     */
+    void setBodyContent(String fxml) {
+        bodyVbox.getChildren().clear();
+        bodyVbox.getChildren().add(App.loadFXML(fxml));
+    }
+
     @FXML private void showHost(ActionEvent event) {
-        bodyVbox.getChildren().add(App.loadFXML("host"));
+        setBodyContent("host");
     }
 
     @FXML private void close(ActionEvent event) {

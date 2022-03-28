@@ -1,15 +1,26 @@
 package org.evergreen_ils.ui.offline;
 
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.Tab;
-import javafx.scene.layout.VBox;
-
-import java.util.Locale;
-import java.util.ResourceBundle;
+import javafx.scene.control.ComboBox;
 
 public class HostController {
+    @FXML ComboBox<String> hostSelect;
+
+    @FXML private void initialize() {
+        // TODO pull options from the database
+        // TODO set the default value from what's in the DB
+    }
+
+    @FXML private void applyHost() {
+
+        String host = hostSelect.getValue();
+        if (host == null) { return; }
+
+        App.context.hostname = host;
+        // Update config
+        // connect to network
+        // Load org units from network OR file
+        // Set login page as root.
+    }
 }
 

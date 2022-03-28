@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS xact (
     item_barcode TEXT,
     noncat_type TEXT,
     noncat_count TEXT,
-    patron_barcode TEXT
+    patron_barcode TEXT,
+    workstation TEXT
 );
 
 

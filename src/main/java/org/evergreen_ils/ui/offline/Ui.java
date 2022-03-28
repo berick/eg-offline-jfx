@@ -1,5 +1,6 @@
 package org.evergreen_ils.ui.offline;
 
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
@@ -8,9 +9,6 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import javafx.application.Application;
-import javafx.application.Platform;
 
 //import java.text.MessageFormat;
 

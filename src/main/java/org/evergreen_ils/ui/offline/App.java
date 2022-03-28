@@ -18,12 +18,22 @@ public class App extends Application {
 
     private static Scene scene;
 
-    static ProgressController progress;
-
     static final Logger logger =
         Logger.getLogger(App.class.getPackage().getName());
 
+    // There should only be one of these
+    static PrimaryController primaryController;
+
+    // Shared progress bar
+    static ProgressController progress;
+
+    // Locale strings
     static ResourceBundle strings;
+
+    // Currently active context
+    static Context context;
+
+    static Database database;
 
     static URL getResource(String fileName) throws IOException {
         return App.class.getResource(fileName);
@@ -31,6 +41,12 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
+        App.context = new Context();
+        App.database = new Database();
+        
+        // TODO
+        App.context.hostname = "localhost";
+        App.context.workstation = "AP-yeehaw-woohoo";
 
         scene = new Scene(loadFXML("primary"));
 
@@ -40,8 +56,6 @@ public class App extends Application {
         stage.setScene(scene);
         stage.setTitle(App.string("app.title"));
         stage.show();
-
-        //setRoot("host");
     }
 
     static String string(String label) {
