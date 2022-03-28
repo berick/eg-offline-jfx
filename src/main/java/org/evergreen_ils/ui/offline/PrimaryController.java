@@ -4,15 +4,47 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.Tab;
 import javafx.scene.layout.VBox;
+
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class PrimaryController {
 
     @FXML TabPane tabs;
-    @FXML VBox mainVbox;
+    @FXML Tab tab1;
+    @FXML Tab tab2;
+    @FXML VBox bodyVbox;
 
-    @FXML private void initialize() throws java.sql.SQLException {
+    @FXML private void initialize() {
+        setupStrings();
+        setupData();
+    }
 
+    void setupData() {
+        // connect to db
+    }
+
+    void setupStrings() {
+        App.logger.info("Loading string bundle for locale " + Locale.getDefault());
+
+        try {
+		    App.strings =
+                ResourceBundle.getBundle("org.evergreen_ils.ui.offline.strings");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (App.strings == null) {
+            Ui.alertAndExit(
+                "Failed to load string bundle for " + Locale.getDefault());
+        }
+    }
+
+    @FXML private void showHost(ActionEvent event) {
+        bodyVbox.getChildren().add(App.loadFXML("host"));
     }
 
     @FXML private void close(ActionEvent event) {

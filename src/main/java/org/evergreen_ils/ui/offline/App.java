@@ -20,9 +20,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.util.Locale;
 import java.util.ResourceBundle;
-
 
 /**
  * JavaFX App
@@ -40,36 +38,8 @@ public class App extends Application {
         return App.class.getResource(fileName);
     }
 
-    void initialize() {
-    
-        try {
-
-            logger.info("Loading string bundle for locale " + Locale.getDefault());
-
-            URL localeDir = App.getResource("locale");
-            String path = localeDir.getFile();
-		   // App.strings = ResourceBundle.getBundle(path + "strings");
-		    App.strings = ResourceBundle.getBundle(
-                "org.evergreen_ils.ui.offline.strings");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (App.strings == null) {
-            App.logger.severe(
-                "Failed to laod string bundle for locale " + Locale.getDefault()
-            );
-            Platform.exit();
-        }
-
-        // TODO connect db
-    }
-
     @Override
     public void start(Stage stage) {
-
-        initialize();
 
         scene = new Scene(loadFXML("primary"));
 
@@ -77,10 +47,14 @@ public class App extends Application {
             .getResource("offline.css").toExternalForm());
 
         stage.setScene(scene);
-        stage.setTitle(App.strings.getString("appTitle"));
+        stage.setTitle(App.string("app.title"));
         stage.show();
 
         //setRoot("host");
+    }
+
+    static String string(String label) {
+        return App.strings.getString(label);
     }
 
     static void setRoot(String fxml) {
@@ -88,20 +62,21 @@ public class App extends Application {
     }
 
     // Load/execute the specified FXML file by name, minus the .fxml suffix.
-    private static Parent loadFXML(String fxml) {
+    static Parent loadFXML(String fxml) {
+
+        fxml += ".fxml";
 
         try {
 
-            FXMLLoader fxmlLoader = new FXMLLoader(App.getResource(fxml + ".fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(App.getResource(fxml));
+
             return fxmlLoader.load();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
 
             Ui.alertAndExit(
-                String.format(
-                    App.strings.getString("fxmlFileError"), 
-                    fxml + ".fxml"
-                )
+                String.format(App.string("error.fxml.file"), fxml)
             );
         }
 
