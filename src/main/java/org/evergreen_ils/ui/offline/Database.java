@@ -12,6 +12,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -73,6 +76,23 @@ public class Database {
         }
     }
 
+    List<Context> loadKnownContexts() throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM config");
 
+        ResultSet set = stmt.executeQuery();
+        List<Context> ctxList = new ArrayList<>();
+
+        while (set.next()) {
+            Context ctx = new Context();
+            ctx.hostname = set.getString("hostname");
+            ctx.workstation = set.getString("workstation");
+            ctx.orgUnitId = set.getInt("org_unit");
+            ctx.isDefault = set.getInt("is_default") == 1;
+
+            ctxList.add(ctx);
+        }
+
+        return ctxList;
+    }
 
  }

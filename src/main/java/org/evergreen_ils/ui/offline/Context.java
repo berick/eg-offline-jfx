@@ -8,6 +8,7 @@ public class Context {
     String hostname;
     String workstation;
     int orgUnitId;
+    boolean isDefault;
     String username;    // in-memory only
     String password;    // in-memory only
 
