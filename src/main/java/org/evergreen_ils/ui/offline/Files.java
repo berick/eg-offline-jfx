@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.util.Callback;
 
 public class Files {
     final static String OFFLINE_DATA_FILE = "offline-data.json";
@@ -52,7 +53,4 @@ public class Files {
         }
         return cleanName.toString();
     }
-
-
-
 }

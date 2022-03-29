@@ -8,8 +8,10 @@ import java.util.List;
 public class HostController {
     @FXML ComboBox<String> hostSelect;
 
-    @FXML private void initialize() {  
+    @FXML private void initialize() {
+
         List<Context> ctxList;
+
         try {
             ctxList = App.database.loadKnownContexts();
         } catch (Exception e) {
@@ -17,12 +19,12 @@ public class HostController {
             Ui.alertAndExit("Could not load context data from the database");
             return;
         }
-        
-        for (Context ctx: ctxList) {                             
+
+        for (Context ctx: ctxList) {
             hostSelect.getItems().add(ctx.hostname);
             if (ctx.isDefault) {
                 hostSelect.setValue(ctx.hostname);
-            }                                                                 
+            }
         }
     }
 
@@ -31,19 +33,23 @@ public class HostController {
         String host = hostSelect.getValue();
         if (host == null) { return; }
 
-        App.context.hostname = host;
+        Context ctx = App.context;
+        ctx.hostname = host;
 
-        App.net.testConnection(App.context, isOnline -> {
-            if (isOnline) {
-                App.logger.info("We are online");
+        App.progress.startProgressTimer(100);
 
-            } else {
-                App.logger.info("We are NOT online");
-            }
-            // Load org units from network OR file
-            // Set login page as root.
+        App.net.testConnection(ctx, isOnline -> handlePostNetCheck(isOnline));
+    }
+
+    Void handlePostNetCheck(boolean isOnline) {
+
+        OrgUnit.getOrgUnits(App.context, p -> {
+            App.progress.stopProgressTimer();
+            //App.primaryController.setBodyContent("login");
             return null;
         });
+
+        return null;
     }
 }
 

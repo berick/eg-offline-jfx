@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 public class App extends Application {
 
     private static Scene scene;
+    private static String OFFLINE_CSS_FILE = "offline.css";
 
     static final Logger logger =
         Logger.getLogger(App.class.getPackage().getName());
@@ -43,18 +44,15 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
+
         App.context = new Context();
         App.database = new Database();
         App.net = new Net();
-        
-        // TODO
-        App.context.hostname = "localhost";
-        App.context.workstation = "AP-yeehaw-woohoo";
 
         scene = new Scene(loadFXML("primary"));
 
         scene.getStylesheets().add(getClass()
-            .getResource("offline.css").toExternalForm());
+            .getResource(OFFLINE_CSS_FILE).toExternalForm());
 
         stage.setScene(scene);
         stage.setTitle(App.string("app.title"));
