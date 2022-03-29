@@ -14,7 +14,7 @@ public class HostController {
         List<Context> ctxList;
 
         try {
-            ctxList = App.database.loadKnownContexts();
+            ctxList = App.data.database.loadKnownContexts();
         } catch (Exception e) {
             e.printStackTrace();
             Ui.alertAndExit("Could not load context data from the database");
@@ -34,24 +34,17 @@ public class HostController {
         String host = hostSelect.getValue();
         if (host == null) { return; }
 
-        Context ctx = App.context;
-        ctx.hostname = host;
+        App.data.context.hostname = host;
 
         App.progress.startProgressTimer(Net.HTTP_REQUEST_TIMEOUT);
 
-        App.net.testConnection(ctx, isOnline -> handlePostNetCheck(isOnline));
-    }
-
-    Void handlePostNetCheck(boolean isOnline) {
-        OrgUnit.getOrgUnits(App.context, p -> handlePostOrgUnits(p));
-        return null;
-    }
-
-    Void handlePostOrgUnits(Void p) {
-        App.progress.stopProgressTimer();
-        // We're in a net request thread here...
-        Platform.runLater(() -> App.primaryController.setBodyContent("login"));
-        return null;
+        App.data.net.testConnection()
+            .thenAccept(isOnline -> App.data.getOrgUnits())
+            .thenAccept(ok -> {
+                App.progress.stopProgressTimer();
+                Platform.runLater(() ->
+                    App.primaryController.setBodyContent("login"));
+            });
     }
 }
 

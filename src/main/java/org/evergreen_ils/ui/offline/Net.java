@@ -1,19 +1,22 @@
 package org.evergreen_ils.ui.offline;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-import java.nio.charset.StandardCharsets;
+
 import java.time.Duration;
+
 import java.util.function.Consumer;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
-
-import javafx.util.Callback;
+import java.util.concurrent.CompletableFuture;
 
 public class Net {
 
@@ -38,9 +41,11 @@ public class Net {
         return URLEncoder.encode(v, StandardCharsets.UTF_8.toString());
     }
 
-    void getUrlBody(String url, Callback<String, Void> callback) {
+    CompletableFuture<String> getUrlBody(String url) {
 
         App.logger.info("Getting URL: " + url);
+
+        CompletableFuture<String> future = new CompletableFuture<>();
 
         // Create a new client with each url lookup so we can leverage
         // the shorter connect timeout to see if we are in fact online.
@@ -62,17 +67,17 @@ public class Net {
                 App.logger.severe(
                     "Error fetching resource: status=" + code + " : " + request);
 
-                callback.call(null);
+                isOnline = false;
+                future.cancel(true);
             }
 
-            callback.call((String) response.body());
+            future.complete((String) response.body());
         };
 
         try {
 
             client.sendAsync(request, BodyHandlers.ofString())
-                .thenAccept(consumer)
-                .join();
+                .thenAccept(consumer);
 
         } catch (Exception e) {
 
@@ -80,27 +85,38 @@ public class Net {
             isOnline = false;
 
             App.logger.info("Cannot load URL: " + url + " " + e);
+
+            future.cancel(true);
         }
+
+        return future;
     }
 
-    void testConnection(Context ctx, Callback<Boolean, Void> callback) {
+    CompletableFuture<Boolean> testConnection() {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
 
         String url = String.format(
-            "https://%s/%s?ping=1", ctx.hostname, HTTP_OFFLINE_PATH);
+            "https://%s/%s?ping=1", App.data.context.hostname, HTTP_OFFLINE_PATH);
 
-        getUrlBody(url, body -> {
-            isOnline = "\"pong\"".equals(body); // JSON
-            App.logger.info("Set isOnline to " + isOnline);
-            callback.call(isOnline);
-            return null;
-        });
+        getUrlBody(url)
+            .thenAccept(body -> {
+                isOnline = "\"pong\"".equals(body); // JSON
+                future.complete(isOnline);
+            });
+
+        return future;
     }
 
-    void getOrgUnits(Context ctx, Callback<String, Void> callback) {
+    CompletableFuture<String> getOrgUnits() {
+        CompletableFuture<String> future = new CompletableFuture<>();
 
         String url = String.format(
-           "https://%s/%s?org_units=1", ctx.hostname, HTTP_OFFLINE_PATH);
+           "https://%s/%s?org_units=1", App.data.context.hostname, HTTP_OFFLINE_PATH);
 
-        getUrlBody(url, callback);
+        getUrlBody(url)
+            .thenAccept(body -> future.complete(body))
+            .exceptionally(e -> { future.cancel(true); return null; });
+
+        return future;
     }
 }

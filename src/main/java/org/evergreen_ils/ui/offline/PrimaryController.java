@@ -25,13 +25,12 @@ public class PrimaryController {
         setupStrings();
         setupData();
         setBodyContent("host");
-        locationText.setText(App.context.toString());
+        locationText.setText(App.data.context.toString());
     }
 
     void setupData() {
         try {
-            App.database.connect();
-            App.database.createDatabase();
+            App.data.setup();
         } catch (Exception e) {
             e.printStackTrace();
             Ui.alertAndExit("Could not create offline database");

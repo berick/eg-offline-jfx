@@ -32,11 +32,7 @@ public class App extends Application {
     static ResourceBundle strings;
 
     // Currently active context
-    static Context context;
-
-    static Net net;
-
-    static Database database;
+    static Data data;
 
     static URL getResource(String fileName) throws IOException {
         return App.class.getResource(fileName);
@@ -45,9 +41,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
 
-        App.context = new Context();
-        App.database = new Database();
-        App.net = new Net();
+        App.data = new Data();
 
         scene = new Scene(loadFXML("primary"));
 

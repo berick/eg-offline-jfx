@@ -14,30 +14,27 @@ public class LoginController {
     @FXML PasswordField passwordInput;
     @FXML ChoiceBox<String> workstationSelect;
     @FXML Text startupHost;
-    @FXML VBox mainVbox;
 
     @FXML private void initialize() {
 
-        App.logger.info("Launching login form with isOnline = " + App.net.isOnline);
+        App.logger.info("Launching login form with isOnline = " + App.data.net.isOnline);
 
+        startupHost.setText(App.data.context.hostname);
+
+        // Load contexts from Data that match the selected hostname.
+        // If one of them is also the default, copy its values into
+        // App.data.context and set the workstation selector to the default workstation.
         /*
-        App.applyOnlineBorder(mainVbox);
-
+        // TODO limit to contexts that match the selected hostname
         for (Config config: App.data.configList) {
             workstationSelect.getItems().add(config.getWorkstation());
+            if (ctx.isDefault) {
+                workstationSelect.setValue(ctx.workstation);
+            }
         }
         */
 
-        //startupHost.setText(App.context.hostname);
-        /*
-
-        String ws = App.data.activeConfig.getWorkstation();
-        if (ws != null) {
-            workstationSelect.setValue(ws);
-        }
-        */
-
-        if (!App.net.isOnline) {
+        if (!App.data.net.isOnline) {
             // We cannot login if we are offline, so avoid prompting for unneeded values.
             usernameInput.setDisable(true);
             passwordInput.setDisable(true);
@@ -51,7 +48,7 @@ public class LoginController {
         String host = App.data.activeConfig.getHostname();
 
         if (ws == null) {
-            if (App.net.isOnline) {
+            if (App.data.net.isOnline) {
                 // Temp config until we have a workstation.
                 App.data.activeConfig = new Config(host);
             } else {

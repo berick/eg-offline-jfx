@@ -16,9 +16,9 @@ import org.json.JSONObject;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.util.Callback;
 
 public class Files {
+
     final static String OFFLINE_DATA_FILE = "offline-data.json";
     final static String ORG_UNITS_FILE = "org-units.json";
 
@@ -33,7 +33,7 @@ public class Files {
 
     static { Arrays.sort(illegalChars); }
 
-    public static String cleanFileName(String badFileName) {
+    String cleanFileName(String badFileName) {
         char lastChar = 0;
         StringBuilder cleanName = new StringBuilder();
         for (int i = 0; i < badFileName.length(); i++) {
@@ -51,6 +51,42 @@ public class Files {
                 lastChar = '_';
             }
         }
+
         return cleanName.toString();
     }
+
+
+    String getHostDataDir() {
+        String dirPath = String.format(
+            "data/%s", cleanFileName(App.data.context.hostname));
+
+        // Creates the directory when needed.
+        new File(dirPath).mkdirs();
+
+        return dirPath;
+    }
+
+    void writeOrgUnitFile(String json) throws IOException {
+
+        String orgFile = getHostDataDir() + "/" + ORG_UNITS_FILE;
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter(orgFile));
+
+        writer.write(json);
+        writer.close();
+    }
+
+    String readOrgUnitFile() throws IOException {
+
+        String orgFile = getHostDataDir() + "/" + ORG_UNITS_FILE;
+
+        BufferedReader reader = new BufferedReader(new FileReader(orgFile));
+
+        String line;
+        String json = "";
+        while ( (line = reader.readLine()) != null) { json += line; }
+
+        return json;
+    }
 }
+
