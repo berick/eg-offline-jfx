@@ -47,27 +47,13 @@ public class Data {
 
             net.getOrgUnits().thenAccept(jsonText -> {
                 orgTree = buildOrgTree(new JSONObject(jsonText));
-                try {
-                    files.writeOrgUnitFile(jsonText);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    future.cancel(true);
-                    return;
-                }
+                files.writeOrgUnitFile(jsonText);
                 future.complete(true);
             });
 
         } else {
 
-            String jsonText;
-            try {
-                jsonText = files.readOrgUnitFile();
-            } catch (Exception e) {
-                e.printStackTrace();
-                future.cancel(true);
-                return future;
-            }
-
+            String jsonText = files.readOrgUnitFile();
             orgTree = buildOrgTree(new JSONObject(jsonText));
             future.complete(true);
         }
@@ -77,8 +63,10 @@ public class Data {
 
 
     OrgUnit buildOrgTree(JSONObject jsonOrg) {
+
         OrgUnit org = new OrgUnit(jsonOrg);
         org.children = new ArrayList<OrgUnit>();
+
         JSONArray children = jsonOrg.getJSONArray("children");
 
         for (int i = 0; i < children.length(); i++) {

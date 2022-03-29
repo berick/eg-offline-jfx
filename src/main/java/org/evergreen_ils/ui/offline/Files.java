@@ -66,25 +66,46 @@ public class Files {
         return dirPath;
     }
 
-    void writeOrgUnitFile(String json) throws IOException {
-
+    void writeOrgUnitFile(String json) {
         String orgFile = getHostDataDir() + "/" + ORG_UNITS_FILE;
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter(orgFile));
+        try {
 
-        writer.write(json);
-        writer.close();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(orgFile));
+
+            writer.write(json);
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Ui.alertAndExit("Cannot write org units file: " + orgFile);
+        }
     }
 
-    String readOrgUnitFile() throws IOException {
+    String readOrgUnitFile() {
 
         String orgFile = getHostDataDir() + "/" + ORG_UNITS_FILE;
 
-        BufferedReader reader = new BufferedReader(new FileReader(orgFile));
-
-        String line;
         String json = "";
-        while ( (line = reader.readLine()) != null) { json += line; }
+
+        File f = new File(orgFile);
+
+        if (!f.exists() || f.isDirectory()) {
+            // If we're reading the org unit file, it means we need them
+            Ui.alertAndExit(App.string("error.data.no_orgs"));
+            return null;
+        }
+
+        try {
+
+            BufferedReader reader = new BufferedReader(new FileReader(f));
+
+            String line;
+            while ( (line = reader.readLine()) != null) { json += line; }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Ui.alertAndExit("Error reading org unit file: " + orgFile);
+        }
 
         return json;
     }

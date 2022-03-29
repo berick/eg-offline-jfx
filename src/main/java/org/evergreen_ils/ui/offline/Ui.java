@@ -25,29 +25,32 @@ public class Ui {
             // TODO this should be managed in CSS
 
             stroke = new BorderStroke(
-                Color.GREEN, BorderStrokeStyle.SOLID, 
+                Color.GREEN, BorderStrokeStyle.SOLID,
                 CornerRadii.EMPTY, new BorderWidths(5)
             );
 
         } else {
 
             stroke = new BorderStroke(
-                Color.YELLOW, BorderStrokeStyle.SOLID, 
+                Color.YELLOW, BorderStrokeStyle.SOLID,
                 CornerRadii.EMPTY, new BorderWidths(5)
             );
         }
 
         Border border = new Border(stroke);
-        region.setBorder(border);  
+        region.setBorder(border);
     }
 
     static void alertAndExit(String msg) {
 
         App.logger.severe(msg);
 
-        new Alert(Alert.AlertType.ERROR, msg).showAndWait();
+        // runLater just in case we're fired from another thread
 
-        Platform.exit();
+        Platform.runLater(() -> {
+            new Alert(Alert.AlertType.ERROR, msg).showAndWait();
+            Platform.exit();
+        });
     }
 }
 
