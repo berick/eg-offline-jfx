@@ -28,7 +28,7 @@ public class LoginController {
         }
         */
 
-        startupHost.setText(App.context.hostname);
+        //startupHost.setText(App.context.hostname);
         /*
 
         String ws = App.data.activeConfig.getWorkstation();
@@ -59,7 +59,7 @@ public class LoginController {
                     "We have no workstation or network access to register one");
                 return;
             }
-       
+
         } else {
 
             for (Config config: App.data.configList) {
@@ -80,7 +80,7 @@ public class LoginController {
         } else {
             // Always refresh server values after a login.
             App.data.loadServerData();
-            App.setRoot("primary"); 
+            App.setRoot("primary");
         }
         */
     }

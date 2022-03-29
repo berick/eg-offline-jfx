@@ -2,6 +2,7 @@ package org.evergreen_ils.ui.offline;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.application.Platform;
 
 import java.util.List;
 
@@ -36,19 +37,20 @@ public class HostController {
         Context ctx = App.context;
         ctx.hostname = host;
 
-        App.progress.startProgressTimer(100);
+        App.progress.startProgressTimer(Net.HTTP_REQUEST_TIMEOUT);
 
         App.net.testConnection(ctx, isOnline -> handlePostNetCheck(isOnline));
     }
 
     Void handlePostNetCheck(boolean isOnline) {
+        OrgUnit.getOrgUnits(App.context, p -> handlePostOrgUnits(p));
+        return null;
+    }
 
-        OrgUnit.getOrgUnits(App.context, p -> {
-            App.progress.stopProgressTimer();
-            App.primaryController.setBodyContent("login");
-            return null;
-        });
-
+    Void handlePostOrgUnits(Void p) {
+        App.progress.stopProgressTimer();
+        // We're in a net request thread here...
+        Platform.runLater(() -> App.primaryController.setBodyContent("login"));
         return null;
     }
 }

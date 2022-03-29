@@ -1,5 +1,7 @@
 package org.evergreen_ils.ui.offline;
 
+import java.lang.InterruptedException;
+
 import javafx.scene.control.ProgressBar;
 import javafx.fxml.FXML;
 
@@ -12,7 +14,7 @@ public class ProgressController {
     @FXML private void initialize() {
         App.progress = this;
     }
-    
+
     void show() {
         progressBar.setVisible(true);
     }
@@ -28,6 +30,12 @@ public class ProgressController {
     void stopProgressTimer() {
         if (ProgressController.timerThread != null) {
             ProgressController.timerThread.interrupt();
+            try {
+                ProgressController.timerThread.join();
+            } catch (InterruptedException e) {
+                App.logger.severe("Someone interrupted our interruption!");
+            }
+            ProgressController.timerThread = null;
         }
     }
 
@@ -40,7 +48,7 @@ public class ProgressController {
                 while (t <= seconds) {
                     try {
                         Thread.sleep(1000);
-                    } catch (java.lang.InterruptedException e) {
+                    } catch (InterruptedException e) {
                         App.logger.info("Progress thread interrupted.  Exiting");
                         hide();
                         return;

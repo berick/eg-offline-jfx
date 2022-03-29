@@ -10,16 +10,28 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.function.Consumer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 
 import javafx.util.Callback;
 
 public class Net {
 
     static final int HTTP_CONNECT_TIMEOUT = 10;
-    static final int HTTP_REQUEST_TIMEOUT = 120;
+    static final int HTTP_REQUEST_TIMEOUT = 60;
+    static final int HTTP_MAX_CONNECTIONS = 4;
     static final String HTTP_OFFLINE_PATH = "offline-data";
 
     boolean isOnline;
+
+    // Dedicated thread pool for our HTTP communications.
+    // Generally, there will only be one active network request
+    // active at a time, but this provides a backstop.
+    ExecutorService executor;
+
+    public Net() {
+        executor = Executors.newFixedThreadPool(HTTP_MAX_CONNECTIONS);
+    }
 
     // Bit of a shortcut
     String encode(String v) throws UnsupportedEncodingException {
@@ -33,6 +45,7 @@ public class Net {
         // Create a new client with each url lookup so we can leverage
         // the shorter connect timeout to see if we are in fact online.
         HttpClient client = HttpClient.newBuilder()
+            .executor(executor)
             .connectTimeout(Duration.ofSeconds(HTTP_CONNECT_TIMEOUT))
             .build();
 
@@ -57,7 +70,9 @@ public class Net {
 
         try {
 
-            client.sendAsync(request, BodyHandlers.ofString()).thenAccept(consumer);
+            client.sendAsync(request, BodyHandlers.ofString())
+                .thenAccept(consumer)
+                .join();
 
         } catch (Exception e) {
 

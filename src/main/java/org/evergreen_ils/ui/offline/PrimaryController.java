@@ -74,6 +74,7 @@ public class PrimaryController {
      */
     void setBodyContent(String fxml) {
         bodyVbox.getChildren().clear();
+        App.logger.info("Setting body content to: " + fxml);
         bodyVbox.getChildren().add(App.loadFXML(fxml));
     }
 
@@ -84,5 +85,4 @@ public class PrimaryController {
     @FXML private void close(ActionEvent event) {
         Platform.exit();
     }
-    
 }
