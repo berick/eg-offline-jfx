@@ -45,7 +45,7 @@ public class HostController {
 
         OrgUnit.getOrgUnits(App.context, p -> {
             App.progress.stopProgressTimer();
-            //App.primaryController.setBodyContent("login");
+            App.primaryController.setBodyContent("login");
             return null;
         });
 
