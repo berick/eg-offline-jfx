@@ -5,31 +5,41 @@ import javafx.scene.control.ComboBox;
 import javafx.application.Platform;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class HostController {
     @FXML ComboBox<String> hostSelect;
 
     @FXML private void initialize() {
 
-        List<Context> ctxList;
+        List<String> seenHosts = new ArrayList<>();
 
-        try {
-            ctxList = App.data.database.loadKnownContexts();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Ui.alertAndExit("Could not load context data from the database");
-            return;
+        // Could be multiple contexts for a given host.
+        Context defaultContext = App.data.knownContexts
+            .stream()
+            .filter(c -> c.isDefault)
+            .collect(Collectors.toList())
+            .get(0);
+
+        // Start by adding the default
+        if (defaultContext != null) {
+            seenHosts.add(defaultContext.hostname);
+            hostSelect.getItems().add(defaultContext.hostname);
+            hostSelect.setValue(defaultContext.hostname);
         }
 
-        for (Context ctx: ctxList) {
-            hostSelect.getItems().add(ctx.hostname);
-            if (ctx.isDefault) {
-                hostSelect.setValue(ctx.hostname);
+        // Now add the rest.
+        for (Context ctx: App.data.knownContexts) {
+            if (!seenHosts.contains(ctx.hostname)) {
+                hostSelect.getItems().add(ctx.hostname);
+                seenHosts.add(ctx.hostname);
             }
         }
     }
 
     @FXML private void applyHost() {
+        App.logger.info("applyHost()");
 
         String host = hostSelect.getValue();
         if (host == null) { return; }
@@ -38,13 +48,14 @@ public class HostController {
 
         App.progress.startProgressTimer(Net.HTTP_REQUEST_TIMEOUT);
 
-        App.data.net.testConnection()
-            .thenAccept(isOnline -> App.data.getOrgUnits())
-            .thenAccept(ok -> {
+        App.data.net.testConnection().thenAccept(isOnline -> {
+            App.data.getOrgUnits().thenAccept(ok -> {
+                App.logger.info("applyHost() post org units");
                 App.progress.stopProgressTimer();
                 Platform.runLater(() ->
                     App.primaryController.setBodyContent("login"));
             });
+        });
     }
 }
 

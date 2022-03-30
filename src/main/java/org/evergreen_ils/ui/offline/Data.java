@@ -33,6 +33,8 @@ public class Data {
 
         App.data.database.connect();
         App.data.database.createDatabase();
+
+        loadContexts();
     }
 
     /**
@@ -40,25 +42,39 @@ public class Data {
      * grabbing from the local if found.
      */
      CompletableFuture<Boolean> getOrgUnits() {
-
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
         if (net.isOnline) {
 
             net.getOrgUnits().thenAccept(jsonText -> {
+
                 orgTree = buildOrgTree(new JSONObject(jsonText));
                 files.writeOrgUnitFile(jsonText);
                 future.complete(true);
+
+            }).exceptionally(e -> {
+                // Failed fetching org units from server.
+                // That's OK if we can load them from our local file.
+
+                loadOrgUnitsFromFile();
+                future.complete(true);
+                return null;
             });
 
         } else {
-
-            String jsonText = files.readOrgUnitFile();
-            orgTree = buildOrgTree(new JSONObject(jsonText));
+            loadOrgUnitsFromFile();
             future.complete(true);
         }
 
         return future;
+    }
+
+    void loadOrgUnitsFromFile() {
+        String jsonText = files.readOrgUnitFile();
+
+        orgTree = buildOrgTree(new JSONObject(jsonText));
+
+        App.logger.info("Successfully loaded org units from file");
     }
 
 
@@ -75,5 +91,14 @@ public class Data {
         }
 
         return org;
+    }
+
+    void loadContexts() {
+        try {
+            knownContexts = database.loadKnownContexts();
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+            Ui.alertAndExit("Error reading configuration from local database");
+        }
     }
 }

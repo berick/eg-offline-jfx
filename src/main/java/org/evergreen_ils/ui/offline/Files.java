@@ -90,7 +90,9 @@ public class Files {
         File f = new File(orgFile);
 
         if (!f.exists() || f.isDirectory()) {
-            // If we're reading the org unit file, it means we need them
+            // If we're reading the org unit file, it means we were
+            // unable to fetch it from the network and we need it
+            // to move forward.  If we don't have it, exit.
             Ui.alertAndExit(App.string("error.data.no_orgs"));
             return null;
         }

@@ -65,12 +65,13 @@ public class Net {
 
             if (code != 200) {
                 App.logger.severe(
-                    "Error fetching resource: status=" + code + " : " + request);
+                    "Error fetching data: status=" + code + " : " + request);
 
                 isOnline = false;
                 future.cancel(true);
             }
 
+            App.logger.info("Completed retrieval of " + url);
             future.complete((String) response.body());
         };
 
