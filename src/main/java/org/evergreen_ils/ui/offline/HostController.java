@@ -16,8 +16,7 @@ public class HostController {
         List<String> seenHosts = new ArrayList<>();
 
         // Could be multiple contexts for a given host.
-        Context defaultContext = App.data.knownContexts
-            .stream()
+        Context defaultContext = App.data.knownContexts.stream()
             .filter(c -> c.isDefault)
             .collect(Collectors.toList())
             .get(0);

@@ -44,7 +44,7 @@ public class Data {
      CompletableFuture<Boolean> getOrgUnits() {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
-        if (net.isOnline) {
+        if (net.status.isOnline) {
 
             net.getOrgUnits().thenAccept(jsonText -> {
 

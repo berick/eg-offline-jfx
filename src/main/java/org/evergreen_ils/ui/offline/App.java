@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -34,6 +35,8 @@ public class App extends Application {
     // Currently active context
     static Data data;
 
+    static boolean shuttingDown = false;
+
     static URL getResource(String fileName) throws IOException {
         return App.class.getResource(fileName);
     }
@@ -51,6 +54,11 @@ public class App extends Application {
         stage.setScene(scene);
         stage.setTitle(App.string("app.title"));
         stage.show();
+    }
+
+    static void shutdown() {
+        shuttingDown = true;
+        Platform.exit();
     }
 
     static String string(String label) {

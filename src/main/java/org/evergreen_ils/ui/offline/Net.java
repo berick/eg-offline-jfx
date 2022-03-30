@@ -17,15 +17,32 @@ import java.util.function.Consumer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Net {
+
 
     static final int HTTP_CONNECT_TIMEOUT = 10;
     static final int HTTP_REQUEST_TIMEOUT = 60;
     static final int HTTP_MAX_CONNECTIONS = 4;
     static final String HTTP_OFFLINE_PATH = "offline-data";
 
-    boolean isOnline;
+    class NetStatus {
+        boolean isOnline;
+        LinkedBlockingQueue<Boolean> queue;
+
+        public NetStatus() {
+            queue = new LinkedBlockingQueue<>();
+        }
+
+        void stateChange(boolean isOnline) {
+            App.logger.info("Setting online state to online=" + isOnline);
+            this.isOnline = isOnline;
+            queue.offer(isOnline);
+        }
+    }
+
+    NetStatus status = new NetStatus();
 
     // Dedicated thread pool for our HTTP communications.
     // Generally, there will only be one active network request
@@ -67,7 +84,7 @@ public class Net {
                 App.logger.severe(
                     "Error fetching data: status=" + code + " : " + request);
 
-                isOnline = false;
+                status.stateChange(false);
                 future.cancel(true);
             }
 
@@ -83,7 +100,7 @@ public class Net {
         } catch (Exception e) {
 
             // Force ourselves offline since something failed.
-            isOnline = false;
+            status.stateChange(false);
 
             App.logger.info("Cannot load URL: " + url + " " + e);
 
@@ -101,7 +118,8 @@ public class Net {
 
         getUrlBody(url)
             .thenAccept(body -> {
-                isOnline = "\"pong\"".equals(body); // JSON
+                boolean isOnline = "\"pong\"".equals(body); // JSON
+                status.stateChange(isOnline);
                 future.complete(isOnline);
             });
 
