@@ -22,7 +22,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class Database {
-    
+
     final static String OFFLINE_DB_URL = "jdbc:sqlite:offline.db";
     final static String OFFLINE_DB_SCHEMA = "offline-schema.sql";
 
@@ -35,8 +35,8 @@ public class Database {
         try {
             conn = DriverManager.getConnection(OFFLINE_DB_URL);
         } catch (Exception e) {
-            e.printStackTrace();
-            Ui.alertAndExit("Cannot connect to SQLITE database: " + OFFLINE_DB_URL);
+            Error.alertAndExit(e,
+                "Cannot connect to SQLITE database: " + OFFLINE_DB_URL);
         }
 
         //xactsList = new FXCollections.observableArrayList();

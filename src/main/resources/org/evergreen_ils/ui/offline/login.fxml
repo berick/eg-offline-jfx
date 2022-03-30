@@ -68,7 +68,7 @@
                   <Insets left="20.0" />
                </GridPane.margin>
             </ChoiceBox>
-            <Button mnemonicParsing="false" text="Login" GridPane.columnIndex="1" GridPane.rowIndex="5">
+            <Button mnemonicParsing="false" text="Login" GridPane.columnIndex="1" GridPane.rowIndex="5" onAction="#login">
                <GridPane.margin>
                   <Insets left="20.0" />
                </GridPane.margin>

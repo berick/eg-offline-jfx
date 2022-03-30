@@ -56,6 +56,9 @@ public class Files {
     }
 
 
+    /**
+     * Returns the path to the application data directory as a String.
+     */
     String getHostDataDir() {
         String dirPath = String.format(
             "data/%s", cleanFileName(App.data.context.hostname));
@@ -64,6 +67,19 @@ public class Files {
         new File(dirPath).mkdirs();
 
         return dirPath;
+    }
+
+    /**
+     * Returns the path to the current org unit's data directory as a String
+     */
+    String getOrgDataDir() {
+
+        String path = String.format(
+            "%s/%s", getHostDataDir(), App.data.context.orgUnitId);
+
+        new File(path).mkdirs();
+
+        return path;
     }
 
     void writeOrgUnitFile(String json) {
@@ -76,8 +92,7 @@ public class Files {
             writer.write(json);
             writer.close();
         } catch (Exception e) {
-            e.printStackTrace();
-            Ui.alertAndExit("Cannot write org units file: " + orgFile);
+            Error.alertAndExit(e, "Cannot write org units file: " + orgFile);
         }
     }
 
@@ -93,7 +108,7 @@ public class Files {
             // If we're reading the org unit file, it means we were
             // unable to fetch it from the network and we need it
             // to move forward.  If we don't have it, exit.
-            Ui.alertAndExit(App.string("error.data.no_orgs"));
+            Error.alertAndExit(null, App.string("error.data.no_orgs"));
             return null;
         }
 
@@ -105,11 +120,43 @@ public class Files {
             while ( (line = reader.readLine()) != null) { json += line; }
 
         } catch (Exception e) {
-            e.printStackTrace();
-            Ui.alertAndExit("Error reading org unit file: " + orgFile);
+            Error.alertAndExit(e, "Error reading org unit file: " + orgFile);
+        }
+
+        return json;
+    }
+
+    String readOfflineDataFile() {
+
+        String filePath = getOrgDataDir() + "/" + OFFLINE_DATA_FILE;
+        BufferedReader reader;
+        String json = "";
+
+        try {
+
+            reader = new BufferedReader(new FileReader(filePath));
+
+            String line;
+            while ( (line = reader.readLine()) != null) {
+                json += line;
+            }
+
+            reader.close();
+
+        } catch (Exception e) {
+            // If we are trying to read the offline data file, it's because
+            // we need it.  If it's not there, get outta here.
+            Error.alertAndExit(e, App.string("error.data.no_data_file"));
+            return null;
+        }
+
+        if ("".equals(json)) {
+            Error.alertAndExit(null, App.string("error.data.no_data_file"));
+            return null;
         }
 
         return json;
     }
 }
+
 

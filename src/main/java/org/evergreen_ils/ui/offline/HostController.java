@@ -16,16 +16,16 @@ public class HostController {
         List<String> seenHosts = new ArrayList<>();
 
         // Could be multiple contexts for a given host.
-        Context defaultContext = App.data.knownContexts.stream()
-            .filter(c -> c.isDefault)
-            .collect(Collectors.toList())
-            .get(0);
 
-        // Start by adding the default
-        if (defaultContext != null) {
-            seenHosts.add(defaultContext.hostname);
-            hostSelect.getItems().add(defaultContext.hostname);
-            hostSelect.setValue(defaultContext.hostname);
+        List<Context> contexts = App.data.knownContexts.stream()
+            .filter(c -> c.isDefault)
+            .collect(Collectors.toList());
+
+        if (!contexts.isEmpty()) {
+            Context ctx = contexts.get(0);
+            seenHosts.add(ctx.hostname);
+            hostSelect.getItems().add(ctx.hostname);
+            hostSelect.setValue(ctx.hostname);
         }
 
         // Now add the rest.
@@ -42,6 +42,9 @@ public class HostController {
 
         String host = hostSelect.getValue();
         if (host == null) { return; }
+
+        // TODO insert into config DB unless this host is already
+        // represented.
 
         App.data.context.hostname = host;
         App.primaryController.setStatusLabel();

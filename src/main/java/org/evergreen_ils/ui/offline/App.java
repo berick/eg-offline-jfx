@@ -81,9 +81,7 @@ public class App extends Application {
             return fxmlLoader.load();
 
         } catch (Exception e) {
-            e.printStackTrace();
-
-            Ui.alertAndExit(
+            Error.alertAndExit(e,
                 String.format(App.string("error.fxml.file"), fxml)
             );
         }

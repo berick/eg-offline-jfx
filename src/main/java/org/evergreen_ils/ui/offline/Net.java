@@ -64,6 +64,11 @@ public class Net {
 
         CompletableFuture<String> future = new CompletableFuture<>();
 
+        if (url == null || "".equals(url)) {
+            future.cancel(true);
+            return future;
+        }
+
         // Create a new client with each url lookup so we can leverage
         // the shorter connect timeout to see if we are in fact online.
         HttpClient client = HttpClient.newBuilder()
@@ -137,5 +142,28 @@ public class Net {
             .exceptionally(e -> { future.cancel(true); return null; });
 
         return future;
+    }
+
+    CompletableFuture<String> getOfflineData() {
+
+        String url = null;
+        Context ctx = App.data.context;
+
+        try {
+
+            url = String.format(
+                "https://%s/%s?workstation=%s&username=%s&password=%s",
+                encode(ctx.hostname),
+                HTTP_OFFLINE_PATH,
+                encode(ctx.workstation),
+                encode(ctx.username),
+                encode(ctx.password)
+            );
+
+        } catch (UnsupportedEncodingException e) {
+			Error.alertAndExit(e, "Cannot create server URL: " + url);
+        }
+
+        return getUrlBody(url);
     }
 }

@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
-import javafx.util.Callback;
-
 public class OrgUnit {
     String name;
     String shortname;

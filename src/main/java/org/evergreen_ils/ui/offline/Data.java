@@ -12,12 +12,23 @@ import org.json.JSONArray;
  */
 public class Data {
 
+    class NonCatType {
+        int id;
+        String name;
+
+        public NonCatType(int id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+    }
+
     Net net;
     Files files;
     Database database;
     OrgUnit orgTree;
     Context context;
     List<Context> knownContexts;
+    List<NonCatType> nonCatTypes;
 
     public Data() {
         orgTree = null;
@@ -26,6 +37,7 @@ public class Data {
         database = new Database();
         context = new Context();
         knownContexts = new ArrayList<>();
+        nonCatTypes = new ArrayList<>();
     }
 
     void setup() throws java.io.FileNotFoundException,
@@ -97,8 +109,53 @@ public class Data {
         try {
             knownContexts = database.loadKnownContexts();
         } catch (java.sql.SQLException e) {
-            e.printStackTrace();
-            Ui.alertAndExit("Error reading configuration from local database");
+            Error.alertAndExit(e,
+                "Error reading configuration from local database");
+        }
+    }
+
+    CompletableFuture<Boolean> loadServerData() {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+
+        if (net.status.isOnline) {
+
+            net.getOfflineData().thenAccept(json -> {
+                absorbOfflineData(json);
+                future.complete(true);
+            });
+
+        } else {
+
+            String json = files.readOfflineDataFile();
+            absorbOfflineData(json);
+            future.complete(true);
+        }
+
+        return future;
+    }
+
+    void absorbOfflineData(String json) {
+
+        JSONObject obj;
+
+        try {
+            obj = new JSONObject(json);
+        } catch (org.json.JSONException e) {
+            Error.alertAndExit(e, "Cannot parse offline data file");
+            return;
+        }
+
+        JSONArray ncTypes = obj.getJSONArray("cnct");
+
+        for (int i = 0; i < ncTypes.length(); i++) {
+            JSONObject nct = ncTypes.getJSONObject(i);
+
+            nonCatTypes.add(
+                new NonCatType(
+                    nct.getInt("id"),
+                    nct.getString("name")
+                )
+            );
         }
     }
 }

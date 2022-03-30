@@ -52,7 +52,7 @@ public class LoginController {
             if (App.data.net.status.isOnline) {
                 App.data.context.hostname = host;
             } else {
-                Ui.alertAndExit(App.string("error.data.no_workstation"));
+                Error.alertAndExit(null, App.string("error.data.no_workstation"));
                 return;
             }
 
@@ -71,17 +71,15 @@ public class LoginController {
         // These are only tracked in memory
         // Will be null if there's no network.
         App.data.context.username = usernameInput.getText();
-        App.data.context.username = passwordInput.getText();
+        App.data.context.password = passwordInput.getText();
 
-        /*
         if (ws == null) {
             // TODO in this App.primaryController.setStatusLabel();
             App.setRoot("workstations");
         } else {
             // Always refresh server values after a login.
             App.data.loadServerData();
-            App.setRoot("primary");
+            App.setRoot("actions");
         }
-        */
     }
 }
