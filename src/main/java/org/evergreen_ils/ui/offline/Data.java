@@ -122,6 +122,10 @@ public class Data {
             net.getOfflineData().thenAccept(json -> {
                 absorbOfflineData(json);
                 future.complete(true);
+            }).exceptionally(e -> {
+                future.cancel(true);
+                Error.alertAndExit(e, "Error fetching offline data from server");
+                return null;
             });
 
         } else {

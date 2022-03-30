@@ -16,7 +16,7 @@ public class Error {
      * @param e May be null
      * @param msg User-facing error message.
      */
-    static void alertAndExit(Exception e, String msg) {
+    static void alertAndExit(Throwable e, String msg) {
 
         final String fullMsg = e == null ? msg : msg + "\n" + e;
 
