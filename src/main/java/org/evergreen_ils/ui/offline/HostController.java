@@ -44,6 +44,7 @@ public class HostController {
         if (host == null) { return; }
 
         App.data.context.hostname = host;
+        App.primaryController.setStatusLabel();
 
         App.progress.startProgressTimer(Net.HTTP_REQUEST_TIMEOUT);
 

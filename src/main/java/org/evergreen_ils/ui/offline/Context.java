@@ -11,8 +11,17 @@ public class Context {
     boolean isDefault;
     String username;    // in-memory only
     String password;    // in-memory only
+    String authtoken;   // in-memory only
 
     @Override public String toString() {
-        return String.format("%s@%s", workstation, hostname);
+        if (hostname == null) {
+            return "";
+        } else {
+            if (workstation == null) {
+                return String.format("@%s", hostname);
+            } else {
+                return String.format("%s@%s", workstation, hostname);
+            }
+        }
     }
 }

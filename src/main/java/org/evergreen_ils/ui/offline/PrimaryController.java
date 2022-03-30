@@ -30,9 +30,9 @@ public class PrimaryController {
         public void run() {
             while (!App.shuttingDown) {
                 try {
-                    Boolean v =
-                        App.data.net.status.queue.poll(10, TimeUnit.SECONDS);
-                    if (v != null) { applyOnlineBorder(); }
+                    applyOnlineBorder(
+                        App.data.net.status.queue.poll(10, TimeUnit.SECONDS)
+                    );
                 } catch (InterruptedException e) {
                     break;
                 }
@@ -52,12 +52,16 @@ public class PrimaryController {
     @FXML private void initialize() {
         App.primaryController = this;
         setupStrings();
+        setStatusLabel(); // clear it
 
         onlineWatcher = new OnlineWatcher();
         new Thread(onlineWatcher).start();
 
         setupData();
         setBodyContent("host");
+    }
+
+    void setStatusLabel() {
         locationText.setText(App.data.context.toString());
     }
 
@@ -118,14 +122,16 @@ public class PrimaryController {
         App.shutdown();
     }
 
-    void applyOnlineBorder() {
-        App.logger.info("Updating online status display");
+    void applyOnlineBorder(Boolean online) {
+        if (online == null) { return; }
+
+        App.logger.info("Updating online status display online = " + online);
 
         BorderStroke stroke;
 
-         // TODO this should be managed in CSS
         if (App.data.net.status.isOnline) {
 
+            // TODO CSS?
             stroke = new BorderStroke(
                 Color.GREEN, BorderStrokeStyle.SOLID,
                 CornerRadii.EMPTY, new BorderWidths(5)

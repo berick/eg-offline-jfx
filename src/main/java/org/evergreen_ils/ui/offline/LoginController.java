@@ -1,6 +1,5 @@
 package org.evergreen_ils.ui.offline;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.PasswordField;
@@ -20,18 +19,15 @@ public class LoginController {
 
     @FXML private void initialize() {
 
-        App.logger.info("Launching login form with isOnline = " + App.data.net.status.isOnline);
+        App.logger.info(
+            "Launching login form with isOnline = " + App.data.net.status.isOnline);
 
         startupHost.setText(App.data.context.hostname);
 
+        // Limit to contexts that match the selected host.
         List<Context> contexts = App.data.knownContexts.stream()
             .filter(c -> c.hostname.equals(App.data.context.hostname))
             .collect(Collectors.toList());
-
-
-        // Load contexts from Data that match the selected hostname.
-        // If one of them is also the default, copy its values into
-        // App.data.context and set the workstation selector to the default workstation.
 
         for (Context ctx: contexts) {
             workstationSelect.getItems().add(ctx.workstation);
@@ -41,7 +37,7 @@ public class LoginController {
         }
 
         if (!App.data.net.status.isOnline) {
-            // We cannot login if we are offline, so avoid prompting for unneeded values.
+            // We cannot login if we are offline
             usernameInput.setDisable(true);
             passwordInput.setDisable(true);
         }
@@ -49,36 +45,37 @@ public class LoginController {
 
     @FXML private void login() {
 
-        /*
         String ws = workstationSelect.getValue();
-        String host = App.data.activeConfig.getHostname();
+        String host = App.data.context.hostname;
 
         if (ws == null) {
-            if (App.data.net.isOnline) {
-                // Temp config until we have a workstation.
-                App.data.activeConfig = new Config(host);
+            if (App.data.net.status.isOnline) {
+                App.data.context.hostname = host;
             } else {
-                App.logger.severe(
-                    "We have no workstation or network access to register one");
+                Ui.alertAndExit(App.string("error.data.no_workstation"));
                 return;
             }
 
         } else {
 
-            for (Config config: App.data.configList) {
-                if (config.getWorkstation().equals(ws)
-                    && config.getHostname().equals(host)) {
-                    App.data.activeConfig = config;
+            // Find the selected context
+            for (Context ctx: App.data.knownContexts) {
+                if (ctx.hostname.equals(host) &&
+                    ctx.workstation.equals(ws)) {
+                    App.data.context = ctx;
+                    App.primaryController.setStatusLabel();
                 }
             }
         }
 
         // These are only tracked in memory
         // Will be null if there's no network.
-        App.data.activeConfig.setUsername(usernameInput.getText());
-        App.data.activeConfig.setPassword(passwordInput.getText());
+        App.data.context.username = usernameInput.getText();
+        App.data.context.username = passwordInput.getText();
 
+        /*
         if (ws == null) {
+            // TODO in this App.primaryController.setStatusLabel();
             App.setRoot("workstations");
         } else {
             // Always refresh server values after a login.

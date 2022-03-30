@@ -10,11 +10,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="772.0" prefWidth="768.0" spacing="20.0" fx:id="mainVbox"
-  xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
-  fx:controller="org.evergreen_ils.ui.offline.PrimaryController">
+<VBox fx:id="mainVbox" prefHeight="772.0" prefWidth="768.0" spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.evergreen_ils.ui.offline.PrimaryController">
    <children>
-      <MenuBar>
+      <MenuBar prefHeight="27.0" prefWidth="705.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
