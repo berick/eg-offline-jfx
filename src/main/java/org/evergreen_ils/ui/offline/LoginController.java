@@ -78,8 +78,12 @@ public class LoginController {
             App.setRoot("workstations");
         } else {
             // Always refresh server values after a login.
-            App.data.loadServerData();
-            App.setRoot("actions");
+            App.data.loadServerData()
+                .thenAccept(x -> App.setRoot("actions"))
+                // Failing to fetch offline data is not ideal, but at this
+                // point we have enough information to allow offline
+                // transaction collection.
+                .exceptionally(x -> { App.setRoot("actions"); return null; });
         }
     }
 }

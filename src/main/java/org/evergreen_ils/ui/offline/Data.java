@@ -123,8 +123,14 @@ public class Data {
                 absorbOfflineData(json);
                 future.complete(true);
             }).exceptionally(e -> {
-                future.cancel(true);
-                Error.alertAndExit(e, "Error fetching offline data from server");
+
+                App.logger.info("Server is online, but we cannot fetch the " +
+                    "expected offline data.  Attempting to pull from cached file.");
+
+                String json = files.readOfflineDataFile();
+                absorbOfflineData(json);
+                future.complete(true);
+
                 return null;
             });
 
