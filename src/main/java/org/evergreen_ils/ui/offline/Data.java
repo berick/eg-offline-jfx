@@ -20,6 +20,23 @@ public class Data {
             this.id = id;
             this.name = name;
         }
+
+        @Override public String toString() {
+            return name;
+        }
+    }
+
+    class CircDuration {
+        String value;
+        String label;
+
+        String toValue() {
+            return value;
+        }
+
+        @Override public String toString() {
+            return label;
+        }
     }
 
     Net net;

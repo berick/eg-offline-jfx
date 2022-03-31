@@ -1,6 +1,7 @@
 package org.evergreen_ils.ui.offline;
 
 import javafx.fxml.FXML;
+import javafx.application.Platform;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -75,15 +76,24 @@ public class LoginController {
 
         if (ws == null) {
             // TODO in this App.primaryController.setStatusLabel();
-            App.setRoot("workstations");
+            App.primaryController.setBodyContent("workstations");
         } else {
             // Always refresh server values after a login.
             App.data.loadServerData()
-                .thenAccept(x -> App.setRoot("actions"))
+
+                .thenAccept(x -> {
+                    Platform.runLater(() ->
+                        App.primaryController.setBodyContent("actions"));
+                })
+
                 // Failing to fetch offline data is not ideal, but at this
                 // point we have enough information to allow offline
                 // transaction collection.
-                .exceptionally(x -> { App.setRoot("actions"); return null; });
+                .exceptionally(x -> {
+                    Platform.runLater(() ->
+                        App.primaryController.setBodyContent("actions"));
+                    return null;
+                });
         }
     }
 }
