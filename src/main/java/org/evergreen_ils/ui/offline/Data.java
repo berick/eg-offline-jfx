@@ -137,8 +137,11 @@ public class Data {
         if (net.status.isOnline) {
 
             net.getOfflineData().thenAccept(json -> {
+
                 absorbOfflineData(json);
+                files.writeOfflineDataFile(json);
                 future.complete(true);
+
             }).exceptionally(e -> {
 
                 App.logger.info("Server is online, but we cannot fetch the " +

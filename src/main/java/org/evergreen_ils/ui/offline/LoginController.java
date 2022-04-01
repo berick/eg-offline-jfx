@@ -75,9 +75,12 @@ public class LoginController {
         App.data.context.password = passwordInput.getText();
 
         if (ws == null) {
+
             // TODO in this App.primaryController.setStatusLabel();
             App.primaryController.setBodyContent("workstations");
+
         } else {
+
             // Always refresh server values after a login.
             App.data.loadServerData()
 
@@ -86,9 +89,10 @@ public class LoginController {
                         App.primaryController.setBodyContent("actions"));
                 })
 
-                // Failing to fetch offline data is not ideal, but at this
-                // point we have enough information to allow offline
-                // transaction collection.
+                // Failing to fetch offline data while online suggests
+                // a server problem beyond just loss of network, but
+                // at this point we have enough information to allow
+                // offline transaction collection.
                 .exceptionally(x -> {
                     Platform.runLater(() ->
                         App.primaryController.setBodyContent("actions"));

@@ -91,6 +91,7 @@ public class Files {
 
             writer.write(json);
             writer.close();
+
         } catch (Exception e) {
             Error.alertAndExit(e, "Cannot write org units file: " + orgFile);
         }
@@ -124,6 +125,21 @@ public class Files {
         }
 
         return json;
+    }
+
+    void writeOfflineDataFile(String json) {
+        String dataFile = getOrgDataDir() + "/" + OFFLINE_DATA_FILE;
+
+        try {
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(dataFile));
+
+            writer.write(json);
+            writer.close();
+
+        } catch (Exception e) {
+            Error.alertAndExit(e, "Cannot write offline data file: " + dataFile);
+        }
     }
 
     String readOfflineDataFile() {
