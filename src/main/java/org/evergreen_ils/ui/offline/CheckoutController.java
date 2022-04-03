@@ -52,6 +52,8 @@ public class CheckoutController {
         durationSelect.setOnAction(handler);
         nonCatSelect.setOnAction(handler);
 
+        */
+
         for (Data.NonCatType nct: App.data.nonCatTypes) {
             nonCatSelect.getItems().add(nct);
         }
@@ -63,7 +65,6 @@ public class CheckoutController {
 
         checkoutsList = FXCollections.observableArrayList();
         checkoutsTable.setItems(checkoutsList);
-        */
     }
 
     @FXML void setCanCheckout(ActionEvent event) {

@@ -49,7 +49,7 @@ public class HostController {
         App.data.context.hostname = host;
         App.primaryController.setStatusLabel();
 
-        App.progress.startProgressTimer(Net.HTTP_REQUEST_TIMEOUT);
+        App.progress.startProgressTimer(Net.HTTP_CONNECT_TIMEOUT);
 
         App.data.net.testConnection().thenAccept(isOnline -> {
             App.data.getOrgUnits().thenAccept(ok -> {

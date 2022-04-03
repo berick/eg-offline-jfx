@@ -70,7 +70,7 @@ public class PrimaryController {
             App.data.setup();
         } catch (Exception e) {
             e.printStackTrace();
-            Ui.alertAndExit("Could not create offline database");
+            Error.alertAndExit(e, "Could not create offline database");
         }
     }
 
@@ -98,7 +98,7 @@ public class PrimaryController {
         }
 
         if (App.strings == null) {
-            Ui.alertAndExit(
+            Error.alertAndExit(null,
                 "Failed to load string bundle for " + Locale.getDefault());
         }
     }
