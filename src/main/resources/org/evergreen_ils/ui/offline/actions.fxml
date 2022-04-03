@@ -11,7 +11,7 @@
         <tabs>
           <Tab text="Checkout">
             <content>
-              <fx:include source="checkout.fxml"/>
+              <fx:include source="checkout.fxml" />
             </content>
           </Tab>
           <Tab text="Renew">
@@ -30,6 +30,11 @@
               </content>
             </Tab>
             <Tab text="Register Patron">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </Tab>
+            <Tab text="Transactions">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
               </content>
