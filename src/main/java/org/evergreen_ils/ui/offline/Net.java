@@ -59,8 +59,13 @@ public class Net {
     }
 
     CompletableFuture<String> getUrlBody(String url) {
+        return getUrlBodyTimeout(url, HTTP_REQUEST_TIMEOUT);
+    }
 
-        App.logger.info("Getting URL: " + url);
+    CompletableFuture<String> getUrlBodyTimeout(String url, int timeout) {
+
+        App.logger.info(
+            String.format("Getting URL [timeout=%d]: %s", timeout, url));
 
         CompletableFuture<String> future = new CompletableFuture<>();
 
@@ -71,6 +76,8 @@ public class Net {
 
         // Create a new client with each url lookup so we can leverage
         // the shorter connect timeout to see if we are in fact online.
+        // XXX .connectTimeout() is not behaving as expected.  For
+        // nonexistent hosts it still waits up to .timeout() seconds.
         HttpClient client = HttpClient.newBuilder()
             .executor(executor)
             .connectTimeout(Duration.ofSeconds(HTTP_CONNECT_TIMEOUT))
@@ -78,7 +85,7 @@ public class Net {
 
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(url))
-            .timeout(Duration.ofSeconds(HTTP_REQUEST_TIMEOUT))
+            .timeout(Duration.ofSeconds(timeout))
             .build();
 
         Consumer<HttpResponse<String>> consumer = response -> {
@@ -97,20 +104,20 @@ public class Net {
             future.complete((String) response.body());
         };
 
-        try {
 
-            client.sendAsync(request, BodyHandlers.ofString())
-                .thenAccept(consumer);
+        client.sendAsync(request, BodyHandlers.ofString())
+            .thenAccept(consumer)
+            .exceptionally(e -> {
 
-        } catch (Exception e) {
+                App.logger.info("Cannot load URL: " + url + " " + e);
 
-            // Force ourselves offline since something failed.
-            status.stateChange(false);
+                // Force ourselves offline since something failed.
+                status.stateChange(false);
 
-            App.logger.info("Cannot load URL: " + url + " " + e);
+                future.cancel(true);
 
-            future.cancel(true);
-        }
+                return null;
+            });
 
         return future;
     }
@@ -121,11 +128,15 @@ public class Net {
         String url = String.format(
             "https://%s/%s?ping=1", App.data.context.hostname, HTTP_OFFLINE_PATH);
 
-        getUrlBody(url)
+        getUrlBodyTimeout(url, HTTP_CONNECT_TIMEOUT)
             .thenAccept(body -> {
                 boolean isOnline = "\"pong\"".equals(body); // JSON
                 status.stateChange(isOnline);
                 future.complete(isOnline);
+            })
+            .exceptionally(e -> {
+                future.complete(false);
+                return null;
             });
 
         return future;
