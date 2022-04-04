@@ -95,4 +95,13 @@ public class Database {
         return ctxList;
     }
 
- }
+    void addHostConfig(String hostname) throws SQLException {
+
+        PreparedStatement stmt =
+            conn.prepareStatement("INSERT INTO config (hostname) VALUES ?");
+
+        stmt.setString(1, hostname);
+
+        stmt.executeUpdate();
+    }
+}

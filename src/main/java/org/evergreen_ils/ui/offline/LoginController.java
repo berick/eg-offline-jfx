@@ -30,12 +30,22 @@ public class LoginController {
             .filter(c -> c.hostname.equals(App.data.context.hostname))
             .collect(Collectors.toList());
 
-        for (Context ctx: contexts) {
-            workstationSelect.getItems().add(ctx.workstation);
-            if (ctx.isDefault) {
-                workstationSelect.setValue(ctx.workstation);
+        if (contexts.size() == 0) {
+            // We have no config entry for this host.  Create one and
+            // set it as the default.
+            App.data.addCurrentHost();
+
+        } else {
+
+            for (Context ctx: contexts) {
+                workstationSelect.getItems().add(ctx.workstation);
+                if (ctx.isDefault) {
+                    workstationSelect.setValue(ctx.workstation);
+                }
             }
         }
+
+        workstationSelect.getItems().add(App.string("app.register_workstation"));
 
         if (!App.data.net.status.isOnline) {
             // We cannot login if we are offline
@@ -49,7 +59,13 @@ public class LoginController {
         String ws = workstationSelect.getValue();
         String host = App.data.context.hostname;
 
-        if (ws == null) {
+        boolean newWorkstation = (
+            ws == null ||
+            ws.equals(App.string("app.register_workstation"))
+        );
+
+        if (newWorkstation) {
+
             if (App.data.net.status.isOnline) {
                 App.data.context.hostname = host;
             } else {
@@ -74,10 +90,8 @@ public class LoginController {
         App.data.context.username = usernameInput.getText();
         App.data.context.password = passwordInput.getText();
 
-        if (ws == null) {
-
-            // TODO in this App.primaryController.setStatusLabel();
-            App.primaryController.setBodyContent("workstations");
+        if (newWorkstation) {
+            App.primaryController.setBodyContent("workstation");
 
         } else {
 

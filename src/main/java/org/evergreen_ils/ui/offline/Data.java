@@ -188,4 +188,14 @@ public class Data {
             );
         }
     }
+
+    // Add a config entry for this host and set it as the default
+    // (i.e. last used).
+    void addCurrentHost() {
+        try {
+            database.addHostConfig(context.hostname);
+        } catch (Exception e) {
+            Error.alertAndExit(e, "Error adding host config");
+        }
+    }
 }
