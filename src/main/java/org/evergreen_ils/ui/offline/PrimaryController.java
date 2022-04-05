@@ -62,6 +62,7 @@ public class PrimaryController {
     }
 
     void setStatusLabel() {
+        App.logger.info("Setting status label to " + App.data.context.toString());
         locationText.setText(App.data.context.toString());
     }
 

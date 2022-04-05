@@ -198,4 +198,14 @@ public class Data {
             Error.alertAndExit(e, "Error adding host config");
         }
     }
+
+    // Saves the current context and sets it as the default.
+    void saveContext() {
+        try {
+            App.logger.info("Saving current context");
+            database.saveContext(context);
+        } catch (Exception e) {
+            Error.alertAndExit(e, "Could not save host/workstation information");
+        }
+    }
 }

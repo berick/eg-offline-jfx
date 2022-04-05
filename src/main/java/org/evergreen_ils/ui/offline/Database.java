@@ -21,6 +21,8 @@ import org.json.JSONObject;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.stream.Collectors;
+
 public class Database {
 
     final static String OFFLINE_DB_URL = "jdbc:sqlite:offline.db";
@@ -103,5 +105,39 @@ public class Database {
         stmt.setString(1, hostname);
 
         stmt.executeUpdate();
+    }
+
+    // Assumes the current context at least has a host and a workstation;
+    void saveContext(Context context) throws SQLException {
+
+        // First try to update by matching on host and workstation
+        PreparedStatement stmt = conn.prepareStatement(
+            "UPDATE config SET org_unit = ?, is_default = TRUE WHERE hostname = ? AND workstation = ?");
+
+        stmt.setInt(1, context.orgUnitId);
+        stmt.setString(2, context.hostname);
+        stmt.setString(3, context.workstation);
+
+        int count = stmt.executeUpdate();
+
+        if (count > 0) {
+            // Success
+            return;
+        }
+
+        // Next assume we have an entry for the hostname and we are just
+        // now applying its workstation value.
+        stmt = conn.prepareStatement(
+            "UPDATE config SET org_unit = ?, workstation = ?, is_default = TRUE WHERE hostname = ?");
+
+        stmt.setInt(1, context.orgUnitId);
+        stmt.setString(2, context.workstation);
+        stmt.setString(3, context.hostname);
+
+        count = stmt.executeUpdate();
+
+        if (count == 0) {
+            Error.alertAndExit(null, "Could not register workstation");
+        }
     }
 }

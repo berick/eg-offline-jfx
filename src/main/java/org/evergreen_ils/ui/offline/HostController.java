@@ -38,13 +38,8 @@ public class HostController {
     }
 
     @FXML private void applyHost() {
-        App.logger.info("applyHost()");
-
         String host = hostSelect.getValue();
         if (host == null) { return; }
-
-        // TODO insert into config DB unless this host is already
-        // represented.
 
         App.data.context.hostname = host;
         App.primaryController.setStatusLabel();
@@ -53,7 +48,6 @@ public class HostController {
 
         App.data.net.testConnection().thenAccept(isOnline -> {
             App.data.getOrgUnits().thenAccept(ok -> {
-                App.logger.info("applyHost() post org units");
                 App.progress.stopProgressTimer();
                 Platform.runLater(() ->
                     App.primaryController.setBodyContent("login"));

@@ -156,6 +156,7 @@ public class Net {
     }
 
     CompletableFuture<String> getOfflineData() {
+        CompletableFuture<String> future = new CompletableFuture<>();
 
         String url = null;
         Context ctx = App.data.context;
@@ -163,18 +164,59 @@ public class Net {
         try {
 
             url = String.format(
-                "https://%s/%s?workstation=%s&username=%s&password=%s",
+                "https://%s/%s?username=%s&password=%s&workstation=%s",
                 encode(ctx.hostname),
                 HTTP_OFFLINE_PATH,
-                encode(ctx.workstation),
                 encode(ctx.username),
-                encode(ctx.password)
+                encode(ctx.password),
+                encode(ctx.workstation)
             );
 
         } catch (UnsupportedEncodingException e) {
 			Error.alertAndExit(e, "Cannot create server URL: " + url);
+            future.cancel(true);
+            return future;
         }
 
-        return getUrlBody(url);
+        getUrlBody(url)
+            .thenAccept(body -> future.complete(body))
+            .exceptionally(e -> { future.cancel(true); return null; });
+
+        return future;
+    }
+
+    CompletableFuture<String> registerWorkstation() {
+        CompletableFuture<String> future = new CompletableFuture<>();
+
+        String url = null;
+        Context ctx = App.data.context;
+
+        try {
+
+            url = String.format(
+                "https://%s/%s?&username=%s&password=%s&register=%s&org_unit=%d",
+                encode(ctx.hostname),
+                HTTP_OFFLINE_PATH,
+                encode(ctx.username),
+                encode(ctx.password),
+                encode(ctx.workstation),
+                ctx.orgUnitId
+            );
+
+        } catch (UnsupportedEncodingException e) {
+			Error.alertAndExit(e, "Cannot create server URL: " + url);
+            future.cancel(true);
+            return future;
+        }
+
+        getUrlBody(url)
+            .thenAccept(body -> future.complete(body))
+            .exceptionally(e -> {
+			    Error.alertAndExit(e, "Could not register workstation");
+                future.cancel(true);
+                return null;
+            });
+
+        return future;
     }
 }
