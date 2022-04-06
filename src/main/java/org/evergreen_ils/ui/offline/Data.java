@@ -119,6 +119,8 @@ public class Data {
             org.children.add(buildOrgTree(childJsonOrg));
         }
 
+        org.sortChildren();
+
         return org;
     }
 

@@ -2,11 +2,20 @@ package org.evergreen_ils.ui.offline;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Collections;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
 
 public class OrgUnit {
+
+	class OrgSorter implements Comparator<OrgUnit> {
+		public int compare(OrgUnit a, OrgUnit b) {
+			return a.name.compareTo(b.name);
+		}
+	}
+
     String name;
     String shortname;
     String label;
@@ -37,5 +46,9 @@ public class OrgUnit {
     public String toString() {
         return label;
     }
+
+	public void sortChildren() {
+		Collections.sort(children, new OrgSorter());
+	}
 }
 

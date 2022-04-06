@@ -25,6 +25,9 @@ public class LoginController {
 
         startupHost.setText(App.data.context.hostname);
 
+        // These could have changed during workstation registration.
+        App.data.loadContexts();
+
         // Limit to contexts that match the selected host.
         List<Context> contexts = App.data.knownContexts.stream()
             .filter(c -> c.hostname.equals(App.data.context.hostname))

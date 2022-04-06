@@ -99,8 +99,10 @@ public class Database {
 
     void addHostConfig(String hostname) throws SQLException {
 
+        App.logger.info("Adding config entry for host " + hostname);
+
         PreparedStatement stmt =
-            conn.prepareStatement("INSERT INTO config (hostname) VALUES ?");
+            conn.prepareStatement("INSERT INTO config (hostname) VALUES (?)");
 
         stmt.setString(1, hostname);
 
@@ -128,7 +130,21 @@ public class Database {
         // Next assume we have an entry for the hostname and we are just
         // now applying its workstation value.
         stmt = conn.prepareStatement(
-            "UPDATE config SET org_unit = ?, workstation = ?, is_default = TRUE WHERE hostname = ?");
+            "UPDATE config SET org_unit = ?, workstation = ?, is_default = TRUE WHERE hostname = ? AND workstation IS NULL");
+
+        stmt.setInt(1, context.orgUnitId);
+        stmt.setString(2, context.workstation);
+        stmt.setString(3, context.hostname);
+
+        count = stmt.executeUpdate();
+
+        if (count > 0) { return; }
+
+        // Add a new host config with no workstation, then update it.
+        addHostConfig(context.hostname);
+
+        stmt = conn.prepareStatement(
+            "UPDATE config SET org_unit = ?, workstation = ?, is_default = TRUE WHERE hostname = ? AND workstation IS NULL");
 
         stmt.setInt(1, context.orgUnitId);
         stmt.setString(2, context.workstation);
@@ -138,6 +154,7 @@ public class Database {
 
         if (count == 0) {
             Error.alertAndExit(null, "Could not register workstation");
+            return;
         }
     }
 }
